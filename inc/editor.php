@@ -86,6 +86,13 @@ function najdisvujsen_register_block_styles() {
 		)
 	);
 	register_block_style(
+		'core/group',
+		array(
+			'name'  => 'program',
+			'label' => __( 'Studijní program', 'najdisvujsen' ),
+		)
+	);
+	register_block_style(
 		'core/image',
 		array(
 			'name'  => 'strip',
@@ -112,6 +119,16 @@ function najdisvujsen_register_block_patterns() {
 			'title'      => __( 'Medailon vyučujícího', 'najdisvujsen' ),
 			'categories' => array( 'najdisvujsen' ),
 			'content'    => '<!-- wp:group {"className":"is-style-profile"} --><div class="wp-block-group is-style-profile"><!-- wp:image {"sizeSlug":"full","linkDestination":"none"} --><figure class="wp-block-image size-full"><img alt=""/></figure><!-- /wp:image --><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">' . esc_html__( 'Jméno vyučujícího', 'najdisvujsen' ) . '</h3><!-- /wp:heading --><!-- wp:paragraph --><p>' . esc_html__( 'Krátké představení.', 'najdisvujsen' ) . '</p><!-- /wp:paragraph --></div><!-- /wp:group -->',
+		)
+	);
+
+	register_block_pattern(
+		'najdisvujsen/program',
+		array(
+			'title'       => __( 'Studijní program', 'najdisvujsen' ),
+			'description' => __( 'Karta programu: název, štítky (stupeň studia jako první, dále délka, forma a typ studia) a popis.', 'najdisvujsen' ),
+			'categories'  => array( 'najdisvujsen' ),
+			'content'     => '<!-- wp:group {"className":"is-style-program"} --><div class="wp-block-group is-style-program"><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">' . esc_html__( 'Název programu', 'najdisvujsen' ) . '</h3><!-- /wp:heading --><!-- wp:list --><ul class="wp-block-list"><!-- wp:list-item --><li>' . esc_html__( 'Bakalářské', 'najdisvujsen' ) . '</li><!-- /wp:list-item --><!-- wp:list-item --><li>' . esc_html__( 'Prezenční', 'najdisvujsen' ) . '</li><!-- /wp:list-item --></ul><!-- /wp:list --><!-- wp:paragraph --><p>' . esc_html__( 'Krátký popis programu.', 'najdisvujsen' ) . '</p><!-- /wp:paragraph --></div><!-- /wp:group -->',
 		)
 	);
 

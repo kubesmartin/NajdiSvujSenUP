@@ -3,7 +3,7 @@ Contributors: Filozofická fakulta Univerzity Palackého v Olomouci
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 0.3.0
+Stable tag: 0.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,13 @@ Study program pages are pages with a department filled in the "Záhlaví stránk
 box. Anchors with their own layout: proc, programy, olomouc, uplatneni,
 zahranici, lide. Other sections are shown as text. Images with the "Fotopás"
 block style become section photos.
+
+In the programy section, groups with the "Studijní program" block style
+(pattern of the same name) become program cards: a level 3 heading with the
+program name, a list of tags with the study level first (Bakalářské,
+Navazující magisterské, Doktorské), then duration, form and type, and a short
+description. Groups with the "Medailon" style in the lide section become
+teacher cards; the section always ends with a line about further experts.
 
 Page fields ("Záhlaví stránky" box): short title, department and its website,
 social profiles, careers shown in the header (one per line) and an emoji.
@@ -72,6 +79,11 @@ License: ISC
 Source: https://lucide.dev/
 
 == Changelog ==
+
+= 0.4.0 =
+* Uniform study program cards with study level tabs.
+* Uniform teachers section.
+* Parallax background in the admission call to action.
 
 = 0.3.0 =
 * Campaign design for the front page and study program pages.

@@ -2,7 +2,8 @@
 /**
  * Template part for the "Who will teach you" section of a program page.
  *
- * Profile groups (image, name heading, paragraphs) become person cards.
+ * Profile groups (image, name heading, paragraphs) become person cards,
+ * other blocks introduce them. The list always ends with the same line.
  *
  * @package NajdiSvujSen
  * @since 0.3.0
@@ -13,6 +14,10 @@ $najdisvujsen_people  = array();
 $najdisvujsen_rest    = array();
 
 foreach ( $najdisvujsen_section['blocks'] as $najdisvujsen_block ) {
+	if ( najdisvujsen_is_more_people_line( $najdisvujsen_block ) ) {
+		continue;
+	}
+
 	if ( ! najdisvujsen_is_group_style( $najdisvujsen_block, 'profile' ) ) {
 		$najdisvujsen_rest[] = $najdisvujsen_block;
 		continue;
@@ -29,10 +34,7 @@ foreach ( $najdisvujsen_section['blocks'] as $najdisvujsen_block ) {
 			$najdisvujsen_person['photo'] = (int) ( $najdisvujsen_inner['attrs']['id'] ?? 0 );
 		} elseif ( 'core/heading' === $najdisvujsen_inner['blockName'] && '' === $najdisvujsen_person['name'] ) {
 			$najdisvujsen_person['name'] = najdisvujsen_block_text( $najdisvujsen_inner );
-		} elseif ( preg_match( '/^(…|\.\.\.)|mnoz[íi] dalš/iu', najdisvujsen_block_text( $najdisvujsen_inner ) ) && mb_strlen( najdisvujsen_block_text( $najdisvujsen_inner ) ) < 80 ) {
-			// "…and many others" closes the whole list, not the last person.
-			$najdisvujsen_rest[] = $najdisvujsen_inner;
-		} else {
+		} elseif ( ! najdisvujsen_is_more_people_line( $najdisvujsen_inner ) ) {
 			$najdisvujsen_person['bio'][] = $najdisvujsen_inner;
 		}
 	}
@@ -47,6 +49,8 @@ najdisvujsen_section_open(
 		'type' => 'lide',
 	)
 );
+
+najdisvujsen_prose( $najdisvujsen_rest, 'people__intro' );
 ?>
 <?php if ( $najdisvujsen_people ) : ?>
 	<div class="people">
@@ -85,7 +89,7 @@ najdisvujsen_section_open(
 		<?php endforeach; ?>
 	</div>
 <?php endif; ?>
+<p class="people__more"><?php esc_html_e( 'A mnoho dalších expertů a expertek', 'najdisvujsen' ); ?></p>
 <?php
-najdisvujsen_prose( $najdisvujsen_rest, 'people__more' );
 najdisvujsen_collage( $najdisvujsen_section['photos'], 'lide', 'section__photos' );
 najdisvujsen_section_close();

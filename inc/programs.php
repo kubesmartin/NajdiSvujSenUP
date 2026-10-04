@@ -375,54 +375,120 @@ function najdisvujsen_related_programs( $post_id, $limit = 4 ) {
 }
 
 /**
- * Derives study level, form and type tags from a program description.
+ * Reads a study program card from a group with the "Studijní program" style.
  *
- * @since 0.3.0
+ * The card is a level 3 heading with the program name (optionally linked),
+ * a list of tags (study level first) and paragraphs describing the program.
  *
- * @param string $text Plain text describing a study program.
- * @return array{level: string, tags: array[]} Level key (bc, mgr, phd or empty) and tags with label and tone.
+ * @since 0.4.0
+ *
+ * @param array $block Parsed core/group block.
+ * @return array{title: string, link: string, level: string, tags: array[], body: array[]} Card data.
  */
-function najdisvujsen_program_tags( $text ) {
-	$level = '';
-	$tags  = array();
-
-	if ( preg_match( '/doktor|ph\.\s?d/iu', $text ) ) {
-		$level  = 'phd';
-		$tags[] = array( __( 'Doktorské', 'najdisvujsen' ), 'blue' );
-	} elseif ( preg_match( '/navazuj|magist/iu', $text ) ) {
-		$level  = 'mgr';
-		$tags[] = array( __( 'Magisterské', 'najdisvujsen' ), 'blue' );
-	} elseif ( preg_match( '/bakalář/iu', $text ) ) {
-		$level  = 'bc';
-		$tags[] = array( __( 'Bakalářské', 'najdisvujsen' ), 'blue' );
-	}
-
-	if ( preg_match( '/kombinovan[éáý]\w* form|kombinované studium|distanční/iu', $text ) ) {
-		$tags[] = array( __( 'Kombinovaná', 'najdisvujsen' ), 'grey' );
-	} elseif ( preg_match( '/prezenční/iu', $text ) ) {
-		$tags[] = array( __( 'Prezenční', 'najdisvujsen' ), 'solid' );
-	}
-
-	if ( preg_match( '/jednoobor|samostatn/iu', $text ) ) {
-		$tags[] = array( __( 'Jednooborové', 'najdisvujsen' ), 'outline' );
-	} elseif ( preg_match( '/dvouobor|maior|minor|v kombinaci|v povinné kombinaci/iu', $text ) ) {
-		$tags[] = array( __( 'V kombinaci', 'najdisvujsen' ), 'outline' );
-	}
-
-	$tags = array_map(
-		static function ( $tag ) {
-			return array(
-				'label' => $tag[0],
-				'tone'  => $tag[1],
-			);
-		},
-		$tags
+function najdisvujsen_program_card( $block ) {
+	$card = array(
+		'title' => '',
+		'link'  => '',
+		'level' => '',
+		'tags'  => array(),
+		'body'  => array(),
 	);
 
+	foreach ( $block['innerBlocks'] as $inner ) {
+		if ( 'core/heading' === $inner['blockName'] && '' === $card['title'] ) {
+			$card['title'] = najdisvujsen_block_text( $inner );
+
+			if ( preg_match( '#<a\s[^>]*href="([^"]+)"#i', najdisvujsen_block_inner_html( $inner ), $matches ) ) {
+				$card['link'] = html_entity_decode( $matches[1] );
+			}
+		} elseif ( 'core/list' === $inner['blockName'] && ! $card['tags'] ) {
+			foreach ( najdisvujsen_list_items( $inner ) as $item ) {
+				$label = trim( wp_strip_all_tags( $item ) );
+				$level = najdisvujsen_program_level( $label );
+
+				if ( $level && ! $card['level'] ) {
+					$card['level'] = $level;
+					$tone          = 'level';
+				} elseif ( preg_match( '/^\d+\s/u', $label ) ) {
+					$tone = 'blue';
+				} elseif ( preg_match( '/^prezenční/iu', $label ) ) {
+					$tone = 'solid';
+				} elseif ( preg_match( '/^kombinovan/iu', $label ) ) {
+					$tone = 'grey';
+				} else {
+					$tone = 'outline';
+				}
+
+				$card['tags'][] = array(
+					'label' => $label,
+					'tone'  => $tone,
+				);
+			}
+		} else {
+			$card['body'][] = $inner;
+		}
+	}
+
+	return $card;
+}
+
+/**
+ * Returns the study level key for a level tag label.
+ *
+ * @since 0.4.0
+ *
+ * @param string $label Tag label, e.g. "Bakalářské".
+ * @return string Level key (bc, mgr or phd), or an empty string.
+ */
+function najdisvujsen_program_level( $label ) {
+	if ( preg_match( '/^bakalář/iu', $label ) ) {
+		return 'bc';
+	}
+
+	if ( preg_match( '/^(navazující\s+)?magister/iu', $label ) ) {
+		return 'mgr';
+	}
+
+	if ( preg_match( '/^doktor/iu', $label ) ) {
+		return 'phd';
+	}
+
+	return '';
+}
+
+/**
+ * Returns the labels of study levels.
+ *
+ * @since 0.4.0
+ *
+ * @return string[] Labels keyed by level.
+ */
+function najdisvujsen_program_levels() {
 	return array(
-		'level' => $level,
-		'tags'  => $tags,
+		'bc'  => __( 'Bakalářské', 'najdisvujsen' ),
+		'mgr' => __( 'Magisterské', 'najdisvujsen' ),
+		'phd' => __( 'Doktorské', 'najdisvujsen' ),
 	);
+}
+
+/**
+ * Checks whether a block is an "…and many others" line closing a list of people.
+ *
+ * The teachers section prints its own closing line instead.
+ *
+ * @since 0.4.0
+ *
+ * @param array $block Parsed block.
+ * @return bool True for a short "and many others" paragraph.
+ */
+function najdisvujsen_is_more_people_line( $block ) {
+	if ( 'core/paragraph' !== $block['blockName'] ) {
+		return false;
+	}
+
+	$text = najdisvujsen_block_text( $block );
+
+	return mb_strlen( $text ) < 80 && 1 === preg_match( '/^(…|\.\.\.)?\s*(a\s+)?(mnoz[íi]|řada|mnoho)\s+dalš/iu', $text );
 }
 
 /**
