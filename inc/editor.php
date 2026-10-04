@@ -38,6 +38,7 @@ function najdisvujsen_allowed_block_types( $allowed_blocks ) {
 		'core/buttons',
 		'core/button',
 		'core/separator',
+		'core/group',
 	);
 }
 add_filter( 'allowed_block_types_all', 'najdisvujsen_allowed_block_types' );
@@ -63,3 +64,64 @@ add_filter( 'block_editor_settings_all', 'najdisvujsen_block_editor_settings' );
 
 add_filter( 'should_load_remote_block_patterns', '__return_false' );
 remove_action( 'enqueue_block_editor_assets', 'wp_enqueue_editor_block_directory_assets' );
+
+/**
+ * Registers the block styles used for structured page content.
+ *
+ * @since 0.2.0
+ */
+function najdisvujsen_register_block_styles() {
+	register_block_style(
+		'core/group',
+		array(
+			'name'  => 'highlight',
+			'label' => __( 'Zvýrazněný box', 'najdisvujsen' ),
+		)
+	);
+	register_block_style(
+		'core/group',
+		array(
+			'name'  => 'profile',
+			'label' => __( 'Medailon', 'najdisvujsen' ),
+		)
+	);
+	register_block_style(
+		'core/image',
+		array(
+			'name'  => 'strip',
+			'label' => __( 'Fotopás', 'najdisvujsen' ),
+		)
+	);
+}
+add_action( 'init', 'najdisvujsen_register_block_styles' );
+
+/**
+ * Registers block patterns for recurring page content.
+ *
+ * @since 0.2.0
+ */
+function najdisvujsen_register_block_patterns() {
+	register_block_pattern_category(
+		'najdisvujsen',
+		array( 'label' => __( 'Najdi svůj sen', 'najdisvujsen' ) )
+	);
+
+	register_block_pattern(
+		'najdisvujsen/profile',
+		array(
+			'title'      => __( 'Medailon vyučujícího', 'najdisvujsen' ),
+			'categories' => array( 'najdisvujsen' ),
+			'content'    => '<!-- wp:group {"className":"is-style-profile"} --><div class="wp-block-group is-style-profile"><!-- wp:image {"sizeSlug":"full","linkDestination":"none"} --><figure class="wp-block-image size-full"><img alt=""/></figure><!-- /wp:image --><!-- wp:heading {"level":3} --><h3 class="wp-block-heading">' . esc_html__( 'Jméno vyučujícího', 'najdisvujsen' ) . '</h3><!-- /wp:heading --><!-- wp:paragraph --><p>' . esc_html__( 'Krátké představení.', 'najdisvujsen' ) . '</p><!-- /wp:paragraph --></div><!-- /wp:group -->',
+		)
+	);
+
+	register_block_pattern(
+		'najdisvujsen/highlight',
+		array(
+			'title'      => __( 'Zvýrazněný box', 'najdisvujsen' ),
+			'categories' => array( 'najdisvujsen' ),
+			'content'    => '<!-- wp:group {"className":"is-style-highlight"} --><div class="wp-block-group is-style-highlight"><!-- wp:paragraph --><p>' . esc_html__( 'Naše rada:', 'najdisvujsen' ) . '</p><!-- /wp:paragraph --></div><!-- /wp:group -->',
+		)
+	);
+}
+add_action( 'init', 'najdisvujsen_register_block_patterns' );

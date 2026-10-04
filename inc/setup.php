@@ -34,6 +34,8 @@ function najdisvujsen_setup() {
 		)
 	);
 
+	add_post_type_support( 'page', 'excerpt' );
+
 	remove_theme_support( 'core-block-patterns' );
 	remove_theme_support( 'block-templates' );
 
@@ -47,3 +49,49 @@ function najdisvujsen_setup() {
 	);
 }
 add_action( 'after_setup_theme', 'najdisvujsen_setup' );
+
+/**
+ * Removes front-end output the theme does not use.
+ *
+ * Emoji are rendered by the system fonts, so the emoji detection script and
+ * styles are not needed.
+ *
+ * @since 0.3.0
+ */
+function najdisvujsen_cleanup_head() {
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
+	remove_action( 'wp_enqueue_scripts', 'wp_enqueue_emoji_styles' );
+	remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+	remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+	remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+	remove_action( 'wp_head', 'wp_generator' );
+	remove_action( 'wp_head', 'wlwmanifest_link' );
+	remove_action( 'wp_head', 'rsd_link' );
+}
+add_action( 'init', 'najdisvujsen_cleanup_head' );
+
+/**
+ * Removes the emoji CDN from resource hints.
+ *
+ * @since 0.3.0
+ *
+ * @param array  $urls          URLs to print for resource hints.
+ * @param string $relation_type The relation type the URLs are printed for.
+ * @return array Filtered URLs.
+ */
+function najdisvujsen_resource_hints( $urls, $relation_type ) {
+	if ( 'dns-prefetch' === $relation_type ) {
+		$urls = array_values(
+			array_filter(
+				$urls,
+				static function ( $url ) {
+					return ! str_contains( is_array( $url ) ? (string) ( $url['href'] ?? '' ) : (string) $url, 's.w.org/images/core/emoji' );
+				}
+			)
+		);
+	}
+
+	return $urls;
+}
+add_filter( 'wp_resource_hints', 'najdisvujsen_resource_hints', 10, 2 );

@@ -8,20 +8,20 @@
 
 ?>
 <article id="post-<?php the_ID(); ?>" <?php post_class( 'entry' ); ?>>
-	<header class="entry__header">
-		<?php the_title( '<h1 class="entry__title">', '</h1>' ); ?>
-	</header>
+	<?php get_template_part( 'template-parts/page-hero' ); ?>
 
-	<div class="entry__content">
-		<?php
-		the_content();
+	<div class="container">
+		<div class="prose entry__content">
+			<?php
+			the_content();
 
-		wp_link_pages(
-			array(
-				'before' => '<nav class="page-links">',
-				'after'  => '</nav>',
-			)
-		);
-		?>
+			wp_link_pages(
+				array(
+					'before' => '<nav class="page-links">',
+					'after'  => '</nav>',
+				)
+			);
+			?>
+		</div>
 	</div>
 </article>

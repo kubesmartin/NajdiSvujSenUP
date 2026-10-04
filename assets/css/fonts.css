@@ -17,7 +17,7 @@
 @font-face {
 	font-family: "Dederon Sans";
 	font-style: normal;
-	font-weight: 400;
+	font-weight: 400 500;
 	font-display: swap;
 	src: url("../fonts/dederon-sans-std-medium.woff2") format("woff2");
 }
@@ -25,7 +25,7 @@
 @font-face {
 	font-family: "Dederon Sans";
 	font-style: italic;
-	font-weight: 400;
+	font-weight: 400 500;
 	font-display: swap;
 	src: url("../fonts/dederon-sans-std-medium-italic.woff2") format("woff2");
 }
