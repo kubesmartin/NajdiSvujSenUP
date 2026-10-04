@@ -5,7 +5,7 @@
 	--nsj-color-gray: #5d5e60;
 	--nsj-color-light: #f2f5f7;
 	--nsj-color-white: #fff;
-	--nsj-font-base: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	--nsj-font-base: "Dederon Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 	--nsj-container: 1200px;
 	--nsj-content: 760px;
 	--nsj-gutter: clamp(1rem, 4vw, 2rem);

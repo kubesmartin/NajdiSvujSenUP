@@ -37,7 +37,7 @@ function najdisvujsen_setup() {
 	remove_theme_support( 'core-block-patterns' );
 	remove_theme_support( 'block-templates' );
 
-	add_editor_style( 'assets/css/editor.css' );
+	add_editor_style( array( 'assets/css/fonts.css', 'assets/css/editor.css' ) );
 
 	register_nav_menus(
 		array(

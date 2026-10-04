@@ -1,0 +1,63 @@
+@font-face {
+	font-family: "Dederon Sans";
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	src: url("../fonts/dederon-sans-std-light.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Dederon Sans";
+	font-style: italic;
+	font-weight: 300;
+	font-display: swap;
+	src: url("../fonts/dederon-sans-std-light-italic.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Dederon Sans";
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url("../fonts/dederon-sans-std-medium.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Dederon Sans";
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url("../fonts/dederon-sans-std-medium-italic.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Dederon Sans";
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url("../fonts/dederon-sans-std-semibold.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Dederon Sans";
+	font-style: italic;
+	font-weight: 600;
+	font-display: swap;
+	src: url("../fonts/dederon-sans-std-semibold-italic.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Dederon Sans";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url("../fonts/dederon-sans-std-bold.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Dederon Sans";
+	font-style: italic;
+	font-weight: 700;
+	font-display: swap;
+	src: url("../fonts/dederon-sans-std-bold-italic.woff2") format("woff2");
+}
