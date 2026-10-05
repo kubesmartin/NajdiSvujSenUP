@@ -26,6 +26,7 @@ $najdisvujsen_back    = $najdisvujsen_front ? get_permalink( $najdisvujsen_front
 				'loading'       => 'eager',
 				'fetchpriority' => 'high',
 				'decoding'      => 'async',
+				'data-parallax' => '',
 			)
 		);
 	}
