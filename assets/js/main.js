@@ -186,11 +186,14 @@
 		const levelTabs = Array.from( explorer.querySelectorAll( '[data-level-tab]' ) );
 		const search = explorer.querySelector( '[data-explorer-search]' );
 		const count = explorer.querySelector( '[data-explorer-count]' );
-		const pickerBubbles = Array.from( explorer.querySelectorAll( '.picker [data-career]' ) );
+		const picker = explorer.querySelector( '.picker' );
+		const careers = picker ? JSON.parse( picker.dataset.careers || '[]' ) : [];
 		const clear = explorer.querySelector( '[data-picker-clear]' );
 		const result = explorer.querySelector( '[data-picker-result]' );
 		const dice = explorer.querySelector( '[data-dice]' );
 		const diceLabel = explorer.querySelector( '[data-dice-label]' );
+		const stage = explorer.querySelector( '[data-picker-stage]' );
+		const stageBubble = explorer.querySelector( '[data-picker-stage-bubble]' );
 		const state = { level: levels.length ? levels[ 0 ].dataset.level : '', career: '', query: '' };
 
 		levels.forEach( ( level ) => level.querySelectorAll( '.program-link' ).forEach( ( link ) => {
@@ -223,7 +226,10 @@
 				}
 			} );
 
-			pickerBubbles.forEach( ( bubble ) => bubble.setAttribute( 'aria-pressed', String( bubble.dataset.career === state.career ) ) );
+			if ( stage && ! ( dice && dice.classList.contains( 'is-spinning' ) ) ) {
+				stage.hidden = ! state.career;
+				stageBubble.textContent = state.career;
+			}
 
 			if ( clear ) {
 				clear.hidden = ! state.career;
@@ -275,16 +281,6 @@
 			} );
 		}
 
-		pickerBubbles.forEach( ( bubble ) => {
-			bubble.addEventListener( 'click', () => {
-				if ( dice && dice.classList.contains( 'is-spinning' ) ) {
-					return;
-				}
-
-				setCareer( state.career === bubble.dataset.career ? '' : bubble.dataset.career, false );
-			} );
-		} );
-
 		if ( clear ) {
 			clear.addEventListener( 'click', () => setCareer( '', false ) );
 		}
@@ -296,53 +292,62 @@
 			} );
 		} );
 
-		if ( dice && pickerBubbles.length ) {
+		// Careers are not listed; drawn ones pop up one at a time until one stays.
+		if ( dice && stage && careers.length ) {
 			dice.addEventListener( 'click', () => {
 				if ( dice.classList.contains( 'is-spinning' ) ) {
 					return;
 				}
 
-				const total = pickerBubbles.length;
-				const start = Math.floor( Math.random() * total );
+				const total = careers.length;
 				const target = Math.floor( Math.random() * total );
-				const steps = reducedMotion ? 0 : total + ( ( target - start + total ) % total );
-				let step = 0;
+				const draws = reducedMotion ? 0 : 14;
+				let draw = 0;
+				let previous = '';
 
 				setCareer( '', false );
 				dice.classList.add( 'is-spinning' );
 				dice.disabled = true;
+				stage.hidden = false;
 
 				if ( diceLabel ) {
 					diceLabel.textContent = l10n.spinning;
 				}
 
-				const finish = () => {
-					pickerBubbles.forEach( ( bubble ) => bubble.classList.remove( 'is-rolling' ) );
-					dice.classList.remove( 'is-spinning' );
-					dice.disabled = false;
-
-					if ( diceLabel ) {
-						diceLabel.textContent = l10n.pickForMe;
-					}
-
-					const landed = pickerBubbles[ target ];
-					landed.classList.add( 'is-landed' );
-					landed.addEventListener( 'animationend', () => landed.classList.remove( 'is-landed' ), { once: true } );
-					setCareer( landed.dataset.career, true );
+				const show = ( career, landed ) => {
+					stageBubble.textContent = career;
+					stageBubble.classList.remove( 'is-popping', 'is-landed' );
+					void stageBubble.offsetWidth;
+					stageBubble.classList.add( landed ? 'is-landed' : 'is-popping' );
 				};
 
-				const tick = () => {
-					if ( step >= steps ) {
-						window.setTimeout( finish, reducedMotion ? 0 : 420 );
+				const next = () => {
+					if ( draw >= draws ) {
+						dice.classList.remove( 'is-spinning' );
+						dice.disabled = false;
+
+						if ( diceLabel ) {
+							diceLabel.textContent = l10n.pickForMe;
+						}
+
+						show( careers[ target ], true );
+						setCareer( careers[ target ], true );
 						return;
 					}
 
-					step++;
-					pickerBubbles.forEach( ( bubble, index ) => bubble.classList.toggle( 'is-rolling', index === ( start + step ) % total ) );
-					window.setTimeout( tick, 40 + Math.pow( step / steps, 3 ) * 280 );
+					let career = careers[ Math.floor( Math.random() * total ) ];
+
+					while ( total > 2 && ( career === previous || career === careers[ target ] ) ) {
+						career = careers[ Math.floor( Math.random() * total ) ];
+					}
+
+					previous = career;
+					draw++;
+					show( career, false );
+					window.setTimeout( next, 70 + Math.pow( draw / draws, 2.5 ) * 260 );
 				};
 
-				tick();
+				next();
 			} );
 		}
 

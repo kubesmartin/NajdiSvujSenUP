@@ -42,19 +42,15 @@ najdisvujsen_prose( $najdisvujsen_data['text'], 'section__intro' );
 ?>
 <div class="explorer" data-explorer>
 	<?php if ( $najdisvujsen_careers ) : ?>
-		<div class="picker js-only">
+		<div class="picker js-only" data-careers="<?php echo esc_attr( (string) wp_json_encode( $najdisvujsen_careers, JSON_UNESCAPED_UNICODE ) ); ?>">
 			<div class="picker__head">
-				<p class="picker__title" id="picker-title"><?php esc_html_e( 'Kým chceš být?', 'najdisvujsen' ); ?></p>
+				<p class="picker__title"><?php esc_html_e( 'Kým chceš být?', 'najdisvujsen' ); ?></p>
 				<button type="button" class="btn btn--small btn--outline" data-picker-clear hidden>
 					<?php echo wp_kses( najdisvujsen_icon( 'x' ), najdisvujsen_icon_kses() ); ?>
 					<?php esc_html_e( 'Zrušit výběr', 'najdisvujsen' ); ?>
 				</button>
 			</div>
-			<ul class="picker__careers" aria-labelledby="picker-title">
-				<?php foreach ( $najdisvujsen_careers as $najdisvujsen_career ) : ?>
-					<li><button type="button" class="bubble bubble--small bubble--interactive" aria-pressed="false" data-career="<?php echo esc_attr( $najdisvujsen_career ); ?>"><?php echo esc_html( $najdisvujsen_career ); ?></button></li>
-				<?php endforeach; ?>
-			</ul>
+			<p class="picker__stage" data-picker-stage hidden><span class="bubble bubble--small" data-picker-stage-bubble></span></p>
 			<div class="picker__dice">
 				<span><?php esc_html_e( 'Nevíš, čím chceš být?', 'najdisvujsen' ); ?></span>
 				<button type="button" class="dice" data-dice>

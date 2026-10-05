@@ -3,7 +3,7 @@ Contributors: Filozofická fakulta Univerzity Palackého v Olomouci
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 0.5.3
+Stable tag: 0.5.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,6 +69,9 @@ License: ISC
 Source: https://lucide.dev/
 
 == Changelog ==
+
+= 0.5.4 =
+* Career picker: drawn careers pop up one at a time instead of a full list of careers.
 
 = 0.5.3 =
 * Program page title bubble: whole words, text optically centred.
