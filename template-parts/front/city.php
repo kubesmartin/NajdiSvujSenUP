@@ -30,11 +30,21 @@ najdisvujsen_section_open(
 		<?php endif; ?>
 	</div>
 	<div class="city-media">
-		<?php
-		if ( $najdisvujsen_data['photo'] ) {
-			najdisvujsen_photo( $najdisvujsen_data['photo'], '(min-width: 900px) 560px, 100vw', 'photo--big', 'city' );
-		}
-		?>
+		<?php $najdisvujsen_video = najdisvujsen_sanitize_video_id( $najdisvujsen_data['video'] ); ?>
+		<?php if ( $najdisvujsen_video ) : ?>
+			<div class="city-video" data-city-video="<?php echo esc_attr( $najdisvujsen_video ); ?>">
+				<picture>
+					<source type="image/webp" srcset="<?php echo esc_url( 'https://i.ytimg.com/vi_webp/' . $najdisvujsen_video . '/maxresdefault.webp' ); ?>">
+					<img class="city-video__poster" src="<?php echo esc_url( 'https://i.ytimg.com/vi/' . $najdisvujsen_video . '/maxresdefault.jpg' ); ?>" width="1280" height="720" alt="" loading="lazy" decoding="async">
+				</picture>
+				<a class="video__play" href="<?php echo esc_url( 'https://www.youtube.com/watch?v=' . $najdisvujsen_video ); ?>" data-city-video-play>
+					<?php echo wp_kses( najdisvujsen_icon( 'play' ), najdisvujsen_icon_kses() ); ?>
+					<span class="screen-reader-text"><?php esc_html_e( 'Přehrát video o Olomouci', 'najdisvujsen' ); ?></span>
+				</a>
+			</div>
+		<?php elseif ( $najdisvujsen_data['photo'] ) : ?>
+			<?php najdisvujsen_photo( $najdisvujsen_data['photo'], '(min-width: 900px) 560px, 100vw', 'photo--big', 'city' ); ?>
+		<?php endif; ?>
 		<ul class="city-stats">
 			<?php foreach ( $najdisvujsen_data['stats'] as $najdisvujsen_stat ) : ?>
 				<?php $najdisvujsen_suffix = $najdisvujsen_stat['plus'] ? '+' : ''; ?>

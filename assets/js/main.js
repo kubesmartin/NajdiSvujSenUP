@@ -497,6 +497,26 @@
 
 	/* Parallax backgrounds */
 
+	function initCityVideo() {
+		document.querySelectorAll( '[data-city-video]' ).forEach( ( video ) => {
+			const play = video.querySelector( '[data-city-video-play]' );
+
+			play.addEventListener( 'click', ( event ) => {
+				const frame = document.createElement( 'iframe' );
+				const params = new URLSearchParams( { autoplay: '1', controls: '1', fs: '1', rel: '0', playsinline: '1' } );
+
+				event.preventDefault();
+				frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent( video.dataset.cityVideo ) + '?' + params.toString();
+				frame.title = play.textContent.trim();
+				frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+				frame.allowFullscreen = true;
+				video.appendChild( frame );
+				video.classList.add( 'is-loaded' );
+				frame.focus();
+			} );
+		} );
+	}
+
 	function initParallax() {
 		const images = Array.from( document.querySelectorAll( '[data-parallax]' ) );
 
@@ -633,6 +653,7 @@
 	initExplorer();
 	initCounters();
 	initVideo();
+	initCityVideo();
 	initParallax();
 	initLightbox();
 }() );

@@ -644,6 +644,12 @@ function najdisvujsen_front_schema() {
 					'type'  => 'image',
 					'label' => __( 'Fotografie', 'najdisvujsen' ),
 				),
+				'video'     => array(
+					'type'        => 'text',
+					'label'       => __( 'Video místo fotografie', 'najdisvujsen' ),
+					'placeholder' => 'https://www.youtube.com/watch?v=…',
+					'help'        => __( 'Nepovinné. Odkaz na video na YouTube. Zobrazí se místo fotografie a spustí se až po kliknutí, i se zvukem.', 'najdisvujsen' ),
+				),
 				'stats'     => array(
 					'type'   => 'repeater',
 					'label'  => __( 'Čísla', 'najdisvujsen' ),
