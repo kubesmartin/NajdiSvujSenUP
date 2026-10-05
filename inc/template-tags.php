@@ -78,7 +78,7 @@ function najdisvujsen_social_links( $post_id ) {
 	$links    = array();
 
 	foreach ( $networks as $key => $network ) {
-		$url = najdisvujsen_get_page_header_field( 'social_' . $key, $post_id );
+		$url = najdisvujsen_get_data( $post_id )['social'][ $key ] ?? ( najdisvujsen_get_data( $post_id )['uvod']['social'][ $key ] ?? '' );
 
 		if ( $url ) {
 			$links[] = array(
@@ -277,7 +277,7 @@ function najdisvujsen_page_url( $path ) {
  *
  * @since 0.3.0
  *
- * @param array $section Section from najdisvujsen_get_sections().
+ * @param array $section Section with keys anchor and title.
  * @param array $args {
  *     Optional arguments.
  *
@@ -324,15 +324,16 @@ function najdisvujsen_section_close() {
 }
 
 /**
- * Prints blocks as flowing text.
+ * Prints rich text field content as flowing text.
  *
  * @since 0.3.0
  *
- * @param array[] $blocks  Parsed blocks.
- * @param string  $classes Additional CSS classes.
+ * @param string $html    Stored rich text HTML.
+ * @param string $classes Additional CSS classes.
+ * @param bool   $checks  Whether bulleted lists get check marks.
  */
-function najdisvujsen_prose( $blocks, $classes = '' ) {
-	$html = najdisvujsen_render_blocks( $blocks );
+function najdisvujsen_prose( $html, $classes = '', $checks = false ) {
+	$html = najdisvujsen_rich( $html, $checks );
 
 	if ( '' === trim( $html ) ) {
 		return;
@@ -341,50 +342,42 @@ function najdisvujsen_prose( $blocks, $classes = '' ) {
 	printf(
 		'<div class="prose%1$s">%2$s</div>',
 		$classes ? ' ' . esc_attr( $classes ) : '',
-		$html // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Rendered post content.
+		wp_kses( $html, najdisvujsen_prose_kses() )
 	);
 }
 
 /**
- * Prints a list of items with check marks.
+ * Returns the HTML allowed in rendered rich text.
  *
- * @since 0.3.0
+ * @since 0.5.0
  *
- * @param string[] $items Item HTML.
+ * @return array[] Allowed tags for wp_kses().
  */
-function najdisvujsen_checks( $items ) {
-	if ( ! $items ) {
-		return;
-	}
-
-	echo '<ul class="checks">';
-
-	foreach ( $items as $item ) {
-		printf(
-			'<li><span class="checks__icon">%1$s</span><span>%2$s</span></li>',
-			wp_kses( najdisvujsen_icon( 'check' ), najdisvujsen_icon_kses() ),
-			wp_kses( $item, najdisvujsen_inline_kses() )
-		);
-	}
-
-	echo '</ul>';
+function najdisvujsen_prose_kses() {
+	return array_merge(
+		najdisvujsen_rich_kses( false ),
+		najdisvujsen_icon_kses(),
+		array(
+			'div'  => array( 'class' => true ),
+			'ul'   => array( 'class' => true ),
+			'span' => array(
+				'class'       => true,
+				'aria-hidden' => true,
+			),
+		)
+	);
 }
 
 /**
- * Finds a photo whose file name contains a word, falling back to the first photo.
+ * Returns the excerpt written for a post, without one generated from content.
  *
- * @since 0.3.0
+ * @since 0.5.0
  *
- * @param int[]  $ids    Attachment IDs.
- * @param string $needle Word to look for in the file name.
- * @return int Attachment ID, or 0 when there are no photos.
+ * @param int $post_id Post ID.
+ * @return string Excerpt.
  */
-function najdisvujsen_find_photo( $ids, $needle ) {
-	foreach ( $ids as $id ) {
-		if ( str_contains( strtolower( wp_basename( (string) get_attached_file( $id ) ) ), $needle ) ) {
-			return (int) $id;
-		}
-	}
+function najdisvujsen_excerpt( $post_id ) {
+	$preview = najdisvujsen_preview_data( $post_id );
 
-	return $ids ? (int) reset( $ids ) : 0;
+	return null !== $preview ? $preview['excerpt'] : (string) get_post_field( 'post_excerpt', $post_id );
 }

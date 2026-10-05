@@ -9,7 +9,7 @@
  * @since 0.3.0
  */
 
-$najdisvujsen_video = najdisvujsen_video_id();
+$najdisvujsen_video = najdisvujsen_sanitize_video_id( $args['data']['youtube'] );
 
 if ( ! $najdisvujsen_video ) {
 	return;

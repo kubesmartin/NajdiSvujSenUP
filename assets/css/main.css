@@ -2672,6 +2672,10 @@ a.program-link:hover {
 	line-height: 1.55;
 }
 
+.why__item p + p {
+	margin-top: 0.6em;
+}
+
 .why__num {
 	display: grid;
 	flex: none;
@@ -3001,6 +3005,19 @@ a.program-link:hover {
 	gap: 14px;
 	align-items: flex-start;
 	line-height: 1.55;
+}
+
+.prose .checks {
+	margin-bottom: 24px;
+}
+
+.prose .checks > li {
+	padding-left: 0;
+	margin-bottom: 0;
+}
+
+.prose .checks > li::before {
+	content: none;
 }
 
 .section--night .checks li {

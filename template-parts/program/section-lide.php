@@ -2,45 +2,15 @@
 /**
  * Template part for the "Who will teach you" section of a program page.
  *
- * Profile groups (image, name heading, paragraphs) become person cards,
- * other blocks introduce them. The list always ends with the same line.
+ * Person cards with an optional introduction. The list always ends with the
+ * same line.
  *
  * @package NajdiSvujSen
  * @since 0.3.0
  */
 
 $najdisvujsen_section = $args['section'];
-$najdisvujsen_people  = array();
-$najdisvujsen_rest    = array();
-
-foreach ( $najdisvujsen_section['blocks'] as $najdisvujsen_block ) {
-	if ( najdisvujsen_is_more_people_line( $najdisvujsen_block ) ) {
-		continue;
-	}
-
-	if ( ! najdisvujsen_is_group_style( $najdisvujsen_block, 'profile' ) ) {
-		$najdisvujsen_rest[] = $najdisvujsen_block;
-		continue;
-	}
-
-	$najdisvujsen_person = array(
-		'photo' => 0,
-		'name'  => '',
-		'bio'   => array(),
-	);
-
-	foreach ( $najdisvujsen_block['innerBlocks'] as $najdisvujsen_inner ) {
-		if ( 'core/image' === $najdisvujsen_inner['blockName'] && ! $najdisvujsen_person['photo'] ) {
-			$najdisvujsen_person['photo'] = (int) ( $najdisvujsen_inner['attrs']['id'] ?? 0 );
-		} elseif ( 'core/heading' === $najdisvujsen_inner['blockName'] && '' === $najdisvujsen_person['name'] ) {
-			$najdisvujsen_person['name'] = najdisvujsen_block_text( $najdisvujsen_inner );
-		} elseif ( ! najdisvujsen_is_more_people_line( $najdisvujsen_inner ) ) {
-			$najdisvujsen_person['bio'][] = $najdisvujsen_inner;
-		}
-	}
-
-	$najdisvujsen_people[] = $najdisvujsen_person;
-}
+$najdisvujsen_people  = $najdisvujsen_section['data']['people'];
 
 najdisvujsen_section_open(
 	$najdisvujsen_section,
@@ -50,7 +20,7 @@ najdisvujsen_section_open(
 	)
 );
 
-najdisvujsen_prose( $najdisvujsen_rest, 'people__intro' );
+najdisvujsen_prose( $najdisvujsen_section['data']['text'], 'people__intro' );
 ?>
 <?php if ( $najdisvujsen_people ) : ?>
 	<div class="people">
@@ -84,7 +54,7 @@ najdisvujsen_prose( $najdisvujsen_rest, 'people__intro' );
 				<?php if ( $najdisvujsen_person['name'] ) : ?>
 					<h3 class="person__name"><?php echo esc_html( $najdisvujsen_person['name'] ); ?></h3>
 				<?php endif; ?>
-				<?php najdisvujsen_prose( $najdisvujsen_person['bio'], 'person__bio' ); ?>
+				<?php najdisvujsen_prose( $najdisvujsen_person['text'], 'person__bio' ); ?>
 			</article>
 		<?php endforeach; ?>
 	</div>

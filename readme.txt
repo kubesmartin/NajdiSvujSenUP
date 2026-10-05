@@ -3,7 +3,7 @@ Contributors: Filozofická fakulta Univerzity Palackého v Olomouci
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 0.4.0
+Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,40 +14,30 @@ Theme for najdisvujsen.cz, the applicant website of the Faculty of Arts, Palack�
 A classic PHP theme with a locked-down block editor: editors change content,
 the theme controls the design. It has no build step and no plugin dependencies.
 
-The front page and study program pages are rendered from regular page
-content. The content is split into sections by level 2 headings and each
-section is matched by its HTML anchor (Advanced > HTML anchor in the editor).
+Study program pages ("Obory" in the admin, post type najdisvujsen_obor) and
+the front page are edited in a form instead of the block editor: tabs for
+page sections, repeatable items (programs, teachers, reasons...), media
+pickers and a simple text editor with paragraphs, lists, links, a subheading
+and a highlight box. Values are stored as post meta (_najdisvujsen_obor,
+_najdisvujsen_front) with revisions; a readable copy is kept in the post
+content. Preview shows unsaved changes to the current user only.
 
-Front page anchors:
+Study program pages keep top-level URLs (/historie/). Programs marked "Zobrazit
+v katalogu" are listed in the front page catalogue under the category of their
+page, sorted alphabetically; programs without a page are added on the front
+page form. Open day dates are hidden after they pass.
 
-* (text before the first heading) - "Why FF UP" facts
-* univerzitni-mesto - university town
-* programy - program catalogue: a level 3 heading per study level, a level 4
-  heading per category and a list of links to programs
-* dod - open days; dates are read from a sentence such as
-  "v pátek 27. 11. 2026 od 8-14 hodin"
-* slovensko - students from Slovakia
+Roles: administrators and editors manage everything. The "Správce oboru" role
+edits only study program pages assigned on the user's profile screen and
+cannot create, delete or unpublish them or change their URL.
 
-Study program pages are pages with a department filled in the "Záhlaví stránky"
-box. Anchors with their own layout: proc, programy, olomouc, uplatneni,
-zahranici, lide. Other sections are shown as text. Images with the "Fotopás"
-block style become section photos.
+Admin screens:
 
-In the programy section, groups with the "Studijní program" block style
-(pattern of the same name) become program cards: a level 3 heading with the
-program name, a list of tags with the study level first (Bakalářské,
-Navazující magisterské, Doktorské), then duration, form and type, and a short
-description. Groups with the "Medailon" style in the lide section become
-teacher cards; the section always ends with a line about further experts.
+* Titulní stránka - front page form
+* Obory - study program pages, guide for editors (Návod)
+* Nastavení webu - application and admission information links
 
-Page fields ("Záhlaví stránky" box): short title, department and its website,
-social profiles, careers shown in the header (one per line) and an emoji.
-The page excerpt is the lead text, the featured image is the header photo.
-
-Customizer:
-
-* Přijímací řízení - application and admission information links
-* Titulní stránka - YouTube video on the front page
+Other pages are regular block editor pages.
 
 == Installation ==
 
@@ -55,10 +45,10 @@ Customizer:
 2. Activate it in Appearance > Themes.
 3. Set a static front page in Settings > Reading.
 
-When switching from the previous Divi-based site, page content has to be
-converted to blocks and the page fields filled in before the theme is
-activated on the live site; Divi shortcodes are not rendered. Deactivate
-plugins that depend on Divi (Divi Pixel, DiviFlash).
+When switching from the previous Divi-based site, the content of study
+program pages and the front page has to be moved into the forms before the
+theme is activated on the live site; Divi shortcodes are not rendered.
+Deactivate plugins that depend on Divi (Divi Pixel, DiviFlash).
 
 == Copyright ==
 
@@ -79,6 +69,12 @@ License: ISC
 Source: https://lucide.dev/
 
 == Changelog ==
+
+= 0.5.0 =
+* Form-based editing of study program pages and the front page.
+* Study program post type with top-level URLs, program editor role.
+* Program catalogue built from study program pages.
+* Site settings screen and editor guide.
 
 = 0.4.0 =
 * Uniform study program cards with study level tabs.

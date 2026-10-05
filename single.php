@@ -1,12 +1,22 @@
 <?php
 /**
- * The template for single posts.
+ * The template for single posts and study program pages.
  *
  * @package NajdiSvujSen
  * @since 0.1.0
  */
 
 get_header();
+
+if ( is_singular( NAJDISVUJSEN_OBOR ) ) {
+	while ( have_posts() ) :
+		the_post();
+		get_template_part( 'template-parts/program/program' );
+	endwhile;
+
+	get_footer();
+	return;
+}
 ?>
 
 <div class="container">

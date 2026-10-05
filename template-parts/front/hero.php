@@ -7,7 +7,7 @@
  */
 
 $najdisvujsen_id    = get_the_ID();
-$najdisvujsen_title = najdisvujsen_get_page_header_field( 'hero_title', $najdisvujsen_id );
+$najdisvujsen_title = $args['data']['title'];
 $najdisvujsen_rows  = najdisvujsen_hero_bubbles();
 $najdisvujsen_label = __( 'Profese, ke kterým vede studium na FF UP', 'najdisvujsen' );
 ?>
@@ -37,7 +37,7 @@ $najdisvujsen_label = __( 'Profese, ke kterým vede studium na FF UP', 'najdisvu
 				<?php
 				echo esc_html(
 					najdisvujsen_nbsp(
-						has_excerpt() ? get_the_excerpt() : __( 'informace pro uchazeče o studium na Filozofické fakultě UP v Olomouci', 'najdisvujsen' )
+						'' !== $args['data']['lead'] ? $args['data']['lead'] : __( 'informace pro uchazeče o studium na Filozofické fakultě UP v Olomouci', 'najdisvujsen' )
 					)
 				);
 				?>

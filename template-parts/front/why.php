@@ -6,41 +6,31 @@
  * @since 0.3.0
  */
 
-$najdisvujsen_section = $args['section'];
-$najdisvujsen_photo   = (int) $args['photo'];
-$najdisvujsen_stats   = array(
-	array( '1573', __( 'vzdělanost šíříme od 16. století', 'najdisvujsen' ), 'blue' ),
-	array( '600+', __( 'kombinací studijních programů', 'najdisvujsen' ), 'night' ),
-	array( '19', __( 'kateder na největší fakultě UP', 'najdisvujsen' ), 'line' ),
-	array( '8', __( 'fakult tvoří Univerzitu Palackého', 'najdisvujsen' ), 'grey' ),
-);
+$najdisvujsen_data  = $args['data'];
+$najdisvujsen_tones = array( 'blue', 'night', 'line', 'grey' );
 ?>
 <section id="univerzita" class="section section--white section--why">
 	<div class="container">
 		<p class="eyebrow"><?php esc_html_e( 'Proč FF UP?', 'najdisvujsen' ); ?></p>
 		<h2 class="section__title">
 			<?php
-			echo $najdisvujsen_section && '' !== $najdisvujsen_section['title']
-				? wp_kses( $najdisvujsen_section['title'], najdisvujsen_inline_kses() )
-				: esc_html__( 'Druhá nejstarší univerzita v Česku', 'najdisvujsen' );
+			echo esc_html( '' !== $najdisvujsen_data['title'] ? $najdisvujsen_data['title'] : __( 'Druhá nejstarší univerzita v Česku', 'najdisvujsen' ) );
 			?>
 		</h2>
 
 		<div class="bento">
-			<?php if ( $najdisvujsen_section && $najdisvujsen_section['blocks'] ) : ?>
-				<?php najdisvujsen_prose( $najdisvujsen_section['blocks'], 'tile tile--text' ); ?>
-			<?php endif; ?>
+			<?php najdisvujsen_prose( $najdisvujsen_data['text'], 'tile tile--text' ); ?>
 
-			<?php foreach ( $najdisvujsen_stats as $najdisvujsen_stat ) : ?>
-				<p class="tile tile--<?php echo esc_attr( $najdisvujsen_stat[2] ); ?>">
-					<span class="tile__num"><?php echo esc_html( $najdisvujsen_stat[0] ); ?></span>
-					<span class="tile__label"><?php echo esc_html( $najdisvujsen_stat[1] ); ?></span>
+			<?php foreach ( $najdisvujsen_data['stats'] as $najdisvujsen_index => $najdisvujsen_stat ) : ?>
+				<p class="tile tile--<?php echo esc_attr( $najdisvujsen_tones[ $najdisvujsen_index % 4 ] ); ?>">
+					<span class="tile__num"><?php echo esc_html( $najdisvujsen_stat['number'] ); ?></span>
+					<span class="tile__label"><?php echo esc_html( $najdisvujsen_stat['label'] ); ?></span>
 				</p>
 			<?php endforeach; ?>
 
 			<?php
-			if ( $najdisvujsen_photo ) {
-				najdisvujsen_photo( $najdisvujsen_photo, '(min-width: 1100px) 600px, 100vw', 'tile tile--photo tile--wide', 'why' );
+			if ( $najdisvujsen_data['photo'] ) {
+				najdisvujsen_photo( $najdisvujsen_data['photo'], '(min-width: 1100px) 600px, 100vw', 'tile tile--photo tile--wide', 'why' );
 			}
 			?>
 

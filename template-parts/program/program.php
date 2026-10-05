@@ -2,14 +2,11 @@
 /**
  * Template part for a study program page.
  *
- * The page content is split into sections by level 2 headings. Sections with
- * a known anchor get a dedicated layout, the rest are rendered as text.
- *
  * @package NajdiSvujSen
  * @since 0.3.0
  */
 
-$najdisvujsen_sections = najdisvujsen_get_sections();
+$najdisvujsen_sections = najdisvujsen_obor_sections( get_the_ID() );
 $najdisvujsen_layouts  = array(
 	'proc'      => 'white',
 	'programy'  => 'muted',
@@ -25,21 +22,15 @@ $najdisvujsen_previous = 'night';
 
 	<?php
 	foreach ( $najdisvujsen_sections as $najdisvujsen_section ) {
-		if ( '' === $najdisvujsen_section['title'] && ! $najdisvujsen_section['blocks'] && ! $najdisvujsen_section['photos'] ) {
-			continue;
-		}
-
-		$najdisvujsen_type = isset( $najdisvujsen_layouts[ $najdisvujsen_section['anchor'] ] ) ? $najdisvujsen_section['anchor'] : 'generic';
-
-		if ( 'generic' === $najdisvujsen_type ) {
+		if ( 'generic' === $najdisvujsen_section['type'] ) {
 			$najdisvujsen_tone = 'white' === $najdisvujsen_previous ? 'muted' : 'white';
 		} else {
-			$najdisvujsen_tone = $najdisvujsen_layouts[ $najdisvujsen_type ];
+			$najdisvujsen_tone = $najdisvujsen_layouts[ $najdisvujsen_section['type'] ];
 		}
 
 		get_template_part(
 			'template-parts/program/section',
-			$najdisvujsen_type,
+			$najdisvujsen_section['type'],
 			array(
 				'section' => $najdisvujsen_section,
 				'tone'    => $najdisvujsen_tone,

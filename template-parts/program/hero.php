@@ -41,8 +41,8 @@ $najdisvujsen_back    = $najdisvujsen_front ? get_permalink( $najdisvujsen_front
 				<span class="program-title__bubble"><?php echo esc_html( $najdisvujsen_name ); ?></span>
 			</h1>
 
-			<?php if ( has_excerpt() ) : ?>
-				<p class="program-hero__lead"><?php echo esc_html( najdisvujsen_nbsp( get_the_excerpt() ) ); ?></p>
+			<?php if ( '' !== najdisvujsen_excerpt( $najdisvujsen_id ) ) : ?>
+				<p class="program-hero__lead"><?php echo esc_html( najdisvujsen_nbsp( najdisvujsen_excerpt( $najdisvujsen_id ) ) ); ?></p>
 			<?php endif; ?>
 
 			<div class="cta-row">

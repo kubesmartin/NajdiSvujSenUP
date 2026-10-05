@@ -23,16 +23,8 @@ najdisvujsen_section_open(
 		<span class="sticker sticker--lg sticker--outline">✈️</span>
 	</div>
 	<div class="abroad__text">
-		<h2 class="section__title"><?php echo wp_kses( $najdisvujsen_section['title'], najdisvujsen_inline_kses() ); ?></h2>
-		<?php
-		foreach ( $najdisvujsen_section['blocks'] as $najdisvujsen_block ) {
-			if ( 'core/list' === $najdisvujsen_block['blockName'] ) {
-				najdisvujsen_checks( najdisvujsen_list_items( $najdisvujsen_block ) );
-			} else {
-				najdisvujsen_prose( array( $najdisvujsen_block ), 'prose--lead' );
-			}
-		}
-		?>
+		<h2 class="section__title"><?php echo esc_html( $najdisvujsen_section['title'] ); ?></h2>
+		<?php najdisvujsen_prose( $najdisvujsen_section['data']['text'], 'prose--lead', true ); ?>
 	</div>
 </div>
 <?php

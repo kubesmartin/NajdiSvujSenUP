@@ -2,7 +2,7 @@
 /**
  * Template part for the program catalogue on the front page.
  *
- * The catalogue is read from the section content. The career picker,
+ * The catalogue lists programs of the program pages. The career picker,
  * level tabs and search are enhancements; without scripts all programs
  * are listed.
  *
@@ -10,8 +10,8 @@
  * @since 0.3.0
  */
 
-$najdisvujsen_section   = $args['section'];
-$najdisvujsen_catalogue = najdisvujsen_parse_catalogue( $najdisvujsen_section['blocks'] );
+$najdisvujsen_data      = $args['data'];
+$najdisvujsen_catalogue = array( 'levels' => najdisvujsen_get_catalogue() );
 $najdisvujsen_map       = najdisvujsen_career_map();
 $najdisvujsen_careers   = array_values(
 	array_filter(
@@ -21,31 +21,13 @@ $najdisvujsen_careers   = array_values(
 		}
 	)
 );
+$najdisvujsen_section   = array(
+	'anchor' => 'programy',
+	'title'  => $najdisvujsen_data['title'],
+);
 
-// Paragraphs after the catalogue become link cards; a paragraph without a link labels the next card.
-$najdisvujsen_cards = array();
-$najdisvujsen_label = '';
-$najdisvujsen_rest  = array();
-
-foreach ( $najdisvujsen_catalogue['after'] as $najdisvujsen_block ) {
-	if ( 'core/paragraph' !== $najdisvujsen_block['blockName'] ) {
-		$najdisvujsen_rest[] = $najdisvujsen_block;
-		continue;
-	}
-
-	$najdisvujsen_html = najdisvujsen_block_inner_html( $najdisvujsen_block );
-
-	if ( ! preg_match( '#<a\s[^>]*href="([^"]+)"#i', $najdisvujsen_html, $najdisvujsen_matches ) ) {
-		$najdisvujsen_label = wp_strip_all_tags( $najdisvujsen_html );
-		continue;
-	}
-
-	$najdisvujsen_cards[] = array(
-		'url'   => html_entity_decode( $najdisvujsen_matches[1] ),
-		'label' => $najdisvujsen_label,
-		'html'  => preg_replace( '#</?a\b[^>]*>#i', '', $najdisvujsen_html ),
-	);
-	$najdisvujsen_label   = '';
+if ( ! $najdisvujsen_catalogue['levels'] ) {
+	return;
 }
 
 najdisvujsen_section_open(
@@ -56,7 +38,7 @@ najdisvujsen_section_open(
 	)
 );
 
-najdisvujsen_prose( $najdisvujsen_catalogue['intro'], 'section__intro' );
+najdisvujsen_prose( $najdisvujsen_data['text'], 'section__intro' );
 ?>
 <div class="explorer" data-explorer>
 	<?php if ( $najdisvujsen_careers ) : ?>
@@ -110,10 +92,10 @@ najdisvujsen_prose( $najdisvujsen_catalogue['intro'], 'section__intro' );
 
 	<p class="explorer__count" data-explorer-count aria-live="polite" hidden></p>
 
-	<?php foreach ( $najdisvujsen_catalogue['levels'] as $najdisvujsen_level => $najdisvujsen_data ) : ?>
+	<?php foreach ( $najdisvujsen_catalogue['levels'] as $najdisvujsen_level => $najdisvujsen_level_data ) : ?>
 		<div class="explorer__level" id="<?php echo esc_attr( 'level-' . $najdisvujsen_level ); ?>" role="tabpanel" aria-labelledby="<?php echo esc_attr( 'level-tab-' . $najdisvujsen_level ); ?>" data-level="<?php echo esc_attr( $najdisvujsen_level ); ?>">
-			<h3 class="explorer__level-title"><?php echo esc_html( $najdisvujsen_data['title'] ); ?></h3>
-			<?php foreach ( $najdisvujsen_data['categories'] as $najdisvujsen_category => $najdisvujsen_items ) : ?>
+			<h3 class="explorer__level-title"><?php echo esc_html( $najdisvujsen_level_data['title'] ); ?></h3>
+			<?php foreach ( $najdisvujsen_level_data['categories'] as $najdisvujsen_category => $najdisvujsen_items ) : ?>
 				<details class="accordion" open>
 					<summary class="accordion__head">
 						<span class="accordion__title"><?php echo esc_html( $najdisvujsen_category ); ?></span>
@@ -142,20 +124,19 @@ najdisvujsen_prose( $najdisvujsen_catalogue['intro'], 'section__intro' );
 	<?php endforeach; ?>
 </div>
 
-<?php if ( $najdisvujsen_cards ) : ?>
+<?php if ( $najdisvujsen_data['cards'] ) : ?>
 	<div class="link-cards">
-		<?php foreach ( $najdisvujsen_cards as $najdisvujsen_card ) : ?>
+		<?php foreach ( $najdisvujsen_data['cards'] as $najdisvujsen_card ) : ?>
 			<a class="card card--interactive<?php echo $najdisvujsen_card['label'] ? ' card--brand' : ''; ?>" href="<?php echo esc_url( $najdisvujsen_card['url'] ); ?>">
 				<?php if ( $najdisvujsen_card['label'] ) : ?>
 					<span class="card__eyebrow"><?php echo esc_html( $najdisvujsen_card['label'] ); ?></span>
-					<span class="card__title"><?php echo esc_html( wp_strip_all_tags( $najdisvujsen_card['html'] ) ); ?></span>
+					<span class="card__title"><?php echo esc_html( $najdisvujsen_card['text'] ); ?></span>
 				<?php else : ?>
-					<span class="card__body"><?php echo wp_kses( $najdisvujsen_card['html'], najdisvujsen_inline_kses() ); ?></span>
+					<span class="card__body"><?php echo esc_html( najdisvujsen_nbsp( $najdisvujsen_card['text'] ) ); ?></span>
 				<?php endif; ?>
 			</a>
 		<?php endforeach; ?>
 	</div>
 <?php endif; ?>
 <?php
-najdisvujsen_prose( $najdisvujsen_rest );
 najdisvujsen_section_close();
