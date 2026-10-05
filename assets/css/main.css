@@ -105,6 +105,8 @@ figcaption {
 .info-cards > *,
 .link-cards > *,
 .city-stats > *,
+.bento > *,
+.city-media > *,
 .why__text {
 	min-width: 0;
 }
@@ -620,6 +622,14 @@ html:not(.js) .js-only {
 	top: var(--wp-admin--admin-bar--height, 0);
 }
 
+/* Below 600px the admin bar scrolls away with the page. */
+@media (max-width: 600px) {
+
+	.admin-bar .site-header {
+		top: 0;
+	}
+}
+
 .site-header__inner {
 	display: flex;
 	gap: 12px;
@@ -649,7 +659,7 @@ html:not(.js) .js-only {
 
 .site-nav {
 	position: fixed;
-	inset: var(--header-height) 0 0;
+	inset: var(--nav-top, var(--header-height)) 0 0;
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
@@ -732,8 +742,7 @@ html:not(.js) .burger {
 
 /* With a menu, the call to action moves into it on small screens. */
 .site-nav__apply {
-	padding: 16px 4px 0;
-	margin-top: auto;
+	padding: 20px 4px 0;
 }
 
 .site-nav__apply .apply-btn {
@@ -2515,6 +2524,26 @@ a.program-link:hover {
 	color: var(--blue-700);
 }
 
+@media (max-width: 599px) {
+
+	.trains {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.train {
+		flex-direction: row;
+		gap: 12px;
+		padding: 12px 22px;
+		text-align: left;
+		border-radius: 999px;
+	}
+
+	.train__time {
+		margin-left: auto;
+		font-size: 20px;
+	}
+}
+
 @media (min-width: 600px) {
 
 	.train {
@@ -3875,5 +3904,47 @@ a.program-link:hover {
 	.marquee {
 		overflow-x: auto;
 		scrollbar-width: none;
+	}
+}
+
+/* Phones */
+
+@media (max-width: 699px) {
+
+	.photo__zoom,
+	.section--life .section__head .sticker {
+		display: none;
+	}
+
+	.tabs--wide {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.accordion__head {
+		flex-wrap: wrap;
+		gap: 10px 12px;
+	}
+
+	.accordion__head .tag {
+		order: 1;
+	}
+
+	.accordion__icon {
+		order: 2;
+	}
+
+	.accordion__title {
+		flex: 1 0 100%;
+		order: 3;
+	}
+
+	.open-days .cta-row {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.open-days .cta-row .btn {
+		justify-content: center;
+		width: 100%;
 	}
 }

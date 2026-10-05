@@ -34,6 +34,10 @@
 		const desktop = window.matchMedia( '(min-width: 1100px)' );
 
 		const setOpen = ( open ) => {
+			if ( open ) {
+				root.style.setProperty( '--nav-top', Math.max( 0, header.getBoundingClientRect().bottom ) + 'px' );
+			}
+
 			header.classList.toggle( 'is-open', open );
 			document.body.style.overflow = open ? 'hidden' : '';
 
