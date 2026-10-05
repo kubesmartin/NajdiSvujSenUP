@@ -493,13 +493,6 @@ function najdisvujsen_program_tags( $card ) {
 		);
 	}
 
-	if ( '' !== $card['duration'] ) {
-		$tags[] = array(
-			'label' => $card['duration'],
-			'tone'  => 'blue',
-		);
-	}
-
 	foreach ( $card['forms'] as $form ) {
 		$tags[] = array(
 			'label' => $forms[ $form ],

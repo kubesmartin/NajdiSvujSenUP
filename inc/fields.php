@@ -270,13 +270,6 @@ function najdisvujsen_obor_schema() {
 							'options'  => najdisvujsen_program_level_options(),
 							'required' => true,
 						),
-						'duration'       => array(
-							'type'        => 'text',
-							'label'       => __( 'Délka studia', 'najdisvujsen' ),
-							'placeholder' => __( 'např. 3 roky', 'najdisvujsen' ),
-							'help'        => __( 'Nepovinné.', 'najdisvujsen' ),
-							'size'        => 'small',
-						),
 						'forms'          => array(
 							'type'    => 'checkboxes',
 							'label'   => __( 'Forma studia', 'najdisvujsen' ),

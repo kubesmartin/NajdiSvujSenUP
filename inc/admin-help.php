@@ -59,7 +59,7 @@ function najdisvujsen_help_page() {
 		array(
 			'title' => __( 'Studijní programy a katalog na titulní stránce', 'najdisvujsen' ),
 			'steps' => array(
-				__( 'Každý program je jedna karta: název, stupeň studia (povinné), případně délka, forma, typ a krátký popis.', 'najdisvujsen' ),
+				__( 'Každý program je jedna karta: název, stupeň studia (povinné), případně forma, typ a krátký popis.', 'najdisvujsen' ),
 				__( 'Programy se zaškrtnutým „Zobrazit v katalogu na titulní stránce“ se samy objeví v katalogu programů pod kategorií oboru (Základní údaje → Kategorie). Stačí zaškrtnout jednu kartu za program.', 'najdisvujsen' ),
 				__( 'Profese z Základních údajů běží pod záhlavím oboru a podle nich obor najde průvodce „Kým chceš být?“.', 'najdisvujsen' ),
 			),
