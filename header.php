@@ -26,8 +26,8 @@ $najdisvujsen_nav = najdisvujsen_page_nav();
 
 		<?php if ( $najdisvujsen_nav ) : ?>
 			<nav id="site-nav" class="site-nav" aria-label="<?php esc_attr_e( 'Obsah stránky', 'najdisvujsen' ); ?>">
-				<?php foreach ( $najdisvujsen_nav as $najdisvujsen_anchor => $najdisvujsen_label ) : ?>
-					<a href="#<?php echo esc_attr( $najdisvujsen_anchor ); ?>"><?php echo esc_html( $najdisvujsen_label ); ?></a>
+				<?php foreach ( $najdisvujsen_nav as $najdisvujsen_href => $najdisvujsen_label ) : ?>
+					<a href="<?php echo esc_url( $najdisvujsen_href ); ?>"><?php echo esc_html( $najdisvujsen_label ); ?></a>
 				<?php endforeach; ?>
 				<div class="site-nav__apply"><?php najdisvujsen_apply_button( 'large' ); ?></div>
 			</nav>

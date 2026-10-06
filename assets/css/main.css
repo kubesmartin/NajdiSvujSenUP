@@ -2147,6 +2147,34 @@ html:not(.js) .site-nav {
 	border-radius: 20px;
 }
 
+.form-filter {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.form-filter__btn {
+	min-height: 40px;
+	padding: 3px 16px 0;
+	font: 700 15px/1 var(--font-display);
+	color: var(--grey-700);
+	cursor: pointer;
+	background: var(--white);
+	border: 2px solid var(--grey-100);
+	border-radius: 999px;
+	transition: background 200ms, color 200ms, border-color 200ms;
+}
+
+.form-filter__btn:hover {
+	border-color: var(--ff-blue);
+}
+
+.form-filter__btn[aria-pressed="true"] {
+	color: var(--white);
+	background: var(--ff-blue);
+	border-color: var(--ff-blue);
+}
+
 .search {
 	position: relative;
 	display: flex;

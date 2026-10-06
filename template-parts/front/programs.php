@@ -79,6 +79,12 @@ najdisvujsen_prose( $najdisvujsen_data['text'], 'section__intro' );
 				<?php endforeach; ?>
 			</div>
 		<?php endif; ?>
+		<div class="form-filter" role="group" aria-label="<?php esc_attr_e( 'Forma studia', 'najdisvujsen' ); ?>">
+			<button type="button" class="form-filter__btn" aria-pressed="true" data-form-filter=""><?php esc_html_e( 'Všechny formy', 'najdisvujsen' ); ?></button>
+			<?php foreach ( najdisvujsen_program_form_options() as $najdisvujsen_form => $najdisvujsen_form_label ) : ?>
+				<button type="button" class="form-filter__btn" aria-pressed="false" data-form-filter="<?php echo esc_attr( $najdisvujsen_form ); ?>"><?php echo esc_html( $najdisvujsen_form_label ); ?></button>
+			<?php endforeach; ?>
+		</div>
 		<label class="search">
 			<span class="screen-reader-text"><?php esc_html_e( 'Hledej program', 'najdisvujsen' ); ?></span>
 			<?php echo wp_kses( najdisvujsen_icon( 'search' ), najdisvujsen_icon_kses() ); ?>
@@ -102,14 +108,14 @@ najdisvujsen_prose( $najdisvujsen_data['text'], 'section__intro' );
 						<?php foreach ( $najdisvujsen_items as $najdisvujsen_item ) : ?>
 							<li>
 								<?php if ( $najdisvujsen_item['url'] ) : ?>
-									<a class="program-link" href="<?php echo esc_url( $najdisvujsen_item['url'] ); ?>" data-slug="<?php echo esc_attr( $najdisvujsen_item['slug'] ); ?>">
+									<a class="program-link" href="<?php echo esc_url( $najdisvujsen_item['url'] ); ?>" data-slug="<?php echo esc_attr( $najdisvujsen_item['slug'] ); ?>" data-forms="<?php echo esc_attr( implode( ' ', $najdisvujsen_item['forms'] ) ); ?>">
 										<?php echo esc_html( $najdisvujsen_item['name'] ); ?>
 										<?php if ( ! $najdisvujsen_item['slug'] ) : ?>
 											<?php echo wp_kses( najdisvujsen_icon( 'arrow-up-right' ), najdisvujsen_icon_kses() ); ?>
 										<?php endif; ?>
 									</a>
 								<?php else : ?>
-									<span class="program-link" data-slug=""><?php echo esc_html( $najdisvujsen_item['name'] ); ?></span>
+									<span class="program-link" data-slug="" data-forms="<?php echo esc_attr( implode( ' ', $najdisvujsen_item['forms'] ) ); ?>"><?php echo esc_html( $najdisvujsen_item['name'] ); ?></span>
 								<?php endif; ?>
 							</li>
 						<?php endforeach; ?>

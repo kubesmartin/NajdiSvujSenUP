@@ -78,7 +78,7 @@ function najdisvujsen_social_links( $post_id ) {
 	$links    = array();
 
 	foreach ( $networks as $key => $network ) {
-		$url = najdisvujsen_get_data( $post_id )['social'][ $key ] ?? ( najdisvujsen_get_data( $post_id )['uvod']['social'][ $key ] ?? '' );
+		$url = (int) get_option( 'page_on_front' ) === (int) $post_id ? najdisvujsen_footer_data()['site'][ $key ] : ( najdisvujsen_get_data( $post_id )['social'][ $key ] ?? '' );
 
 		if ( $url ) {
 			$links[] = array(
@@ -256,20 +256,6 @@ function najdisvujsen_marquee( $items, $args = array() ) {
 	}
 
 	echo '</div></div>';
-}
-
-/**
- * Returns the URL of a page by its path, falling back to an empty string.
- *
- * @since 0.3.0
- *
- * @param string $path Page path.
- * @return string URL.
- */
-function najdisvujsen_page_url( $path ) {
-	$page = get_page_by_path( $path );
-
-	return $page && 'publish' === $page->post_status ? (string) get_permalink( $page ) : '';
 }
 
 /**

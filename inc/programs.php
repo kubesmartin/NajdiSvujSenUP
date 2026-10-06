@@ -222,10 +222,36 @@ function najdisvujsen_obor_catalogue_items( $post_id ) {
 			'category' => $data['category'],
 			'url'      => (string) get_permalink( $post_id ),
 			'slug'     => get_post_field( 'post_name', $post_id ),
+			'forms'    => najdisvujsen_program_forms( $data['programy']['programs'], $card ),
 		);
 	}
 
 	return $items;
+}
+
+/**
+ * Returns the study forms of a program from all its cards.
+ *
+ * A program may have a card per form; cards of the same level and name are
+ * combined. Programs without a stated form are full-time, the default at the faculty.
+ *
+ * @since 0.6.0
+ *
+ * @param array[] $cards Program cards of the page.
+ * @param array   $card  Card shown in the catalogue.
+ * @return string[] Form keys.
+ */
+function najdisvujsen_program_forms( $cards, $card ) {
+	$names = array_filter( array( mb_strtolower( $card['name'] ), mb_strtolower( $card['catalogue_name'] ) ) );
+	$forms = array();
+
+	foreach ( $cards as $other ) {
+		if ( $other['level'] === $card['level'] && array_intersect( $names, array( mb_strtolower( $other['name'] ), mb_strtolower( $other['catalogue_name'] ) ) ) ) {
+			$forms = array_merge( $forms, $other['forms'] );
+		}
+	}
+
+	return $forms ? array_values( array_unique( $forms ) ) : array( 'prezencni' );
 }
 
 /**
@@ -274,6 +300,7 @@ function najdisvujsen_get_catalogue() {
 			'category' => $extra['category'],
 			'url'      => $extra['url'],
 			'slug'     => najdisvujsen_program_slug_from_url( $extra['url'] ),
+			'forms'    => $extra['forms'] ? $extra['forms'] : array( 'prezencni' ),
 		);
 	}
 
@@ -500,7 +527,15 @@ function najdisvujsen_program_tags( $card ) {
 		);
 	}
 
-	foreach ( $card['types'] as $type ) {
+	$card_types = $card['types'];
+
+	// A program open as both major and minor gets one tag.
+	if ( in_array( 'maior', $card_types, true ) && in_array( 'minor', $card_types, true ) ) {
+		$card_types     = array_diff( $card_types, array( 'minor' ) );
+		$types['maior'] = __( 'Maior / Minor', 'najdisvujsen' );
+	}
+
+	foreach ( $card_types as $type ) {
 		$tags[] = array(
 			'label' => $types[ $type ],
 			'tone'  => 'outline',
@@ -515,23 +550,37 @@ function najdisvujsen_program_tags( $card ) {
  *
  * @since 0.3.0
  *
- * @return string[] Labels keyed by section anchor.
+ * @return string[] Labels keyed by link target: a section anchor (#…) or a URL.
  */
 function najdisvujsen_page_nav() {
 	if ( is_front_page() ) {
 		$data = najdisvujsen_get_data( get_queried_object_id() );
-		$nav  = array( 'univerzita' => __( 'Proč u nás', 'najdisvujsen' ) );
+		$nav  = array();
+
+		foreach ( $data['menu']['items'] ?? array() as $item ) {
+			$href = 'url' === $item['target'] ? $item['url'] : '#' . $item['target'];
+
+			if ( '' !== $item['label'] && '' !== $href && '#' !== $href ) {
+				$nav[ $href ] = $item['label'];
+			}
+		}
+
+		if ( $nav ) {
+			return $nav;
+		}
+
+		$nav = array( '#univerzita' => __( 'Proč u nás', 'najdisvujsen' ) );
 
 		if ( $data && najdisvujsen_get_catalogue() ) {
-			$nav['programy'] = __( 'Programy', 'najdisvujsen' );
+			$nav['#programy'] = __( 'Programy', 'najdisvujsen' );
 		}
 
 		if ( $data && ( najdisvujsen_open_days( $data['dod']['dates'] ) || '' !== $data['dod']['text'] ) ) {
-			$nav['dod'] = __( 'DOD', 'najdisvujsen' );
+			$nav['#dod'] = __( 'DOD', 'najdisvujsen' );
 		}
 
 		if ( $data && najdisvujsen_has_content( array( $data['slovensko']['text'], $data['slovensko']['trains'] ) ) ) {
-			$nav['slovensko'] = __( 'Ze Slovenska', 'najdisvujsen' );
+			$nav['#slovensko'] = __( 'Ze Slovenska', 'najdisvujsen' );
 		}
 
 		return $nav;
@@ -544,13 +593,13 @@ function najdisvujsen_page_nav() {
 	$nav = array();
 
 	foreach ( najdisvujsen_obor_sections( get_queried_object_id() ) as $section ) {
-		if ( '' !== $section['nav'] && ! isset( $nav[ $section['anchor'] ] ) ) {
-			$nav[ $section['anchor'] ] = $section['nav'];
+		if ( '' !== $section['nav'] && ! isset( $nav[ '#' . $section['anchor'] ] ) ) {
+			$nav[ '#' . $section['anchor'] ] = $section['nav'];
 		}
 	}
 
-	if ( ! isset( $nav['prijimacky'] ) ) {
-		$nav['prijimacky'] = __( 'Přijímačky', 'najdisvujsen' );
+	if ( ! isset( $nav['#prijimacky'] ) ) {
+		$nav['#prijimacky'] = __( 'Přijímačky', 'najdisvujsen' );
 	}
 
 	return $nav;

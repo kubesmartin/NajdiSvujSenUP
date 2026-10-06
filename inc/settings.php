@@ -71,8 +71,8 @@ function najdisvujsen_sanitize_video_id( $value ) {
  */
 function najdisvujsen_settings_menu() {
 	add_menu_page(
-		__( 'Nastavení webu', 'najdisvujsen' ),
-		__( 'Nastavení webu', 'najdisvujsen' ),
+		__( 'Odkazy na přihlášku a přijímačky', 'najdisvujsen' ),
+		__( 'Odkazy na přihlášku a přijímačky', 'najdisvujsen' ),
 		'edit_others_pages',
 		'najdisvujsen-settings',
 		'najdisvujsen_settings_page',
@@ -117,7 +117,7 @@ add_action( 'admin_init', 'najdisvujsen_settings_save' );
 function najdisvujsen_settings_page() {
 	?>
 	<div class="wrap">
-		<h1><?php esc_html_e( 'Nastavení webu', 'najdisvujsen' ); ?></h1>
+		<h1><?php esc_html_e( 'Odkazy na přihlášku a přijímačky', 'najdisvujsen' ); ?></h1>
 		<?php if ( isset( $_GET['updated'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only shows a notice. ?>
 			<div class="notice notice-success is-dismissible"><p><?php esc_html_e( 'Nastavení bylo uloženo.', 'najdisvujsen' ); ?></p></div>
 		<?php endif; ?>

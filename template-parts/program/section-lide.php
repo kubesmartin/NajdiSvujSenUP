@@ -59,7 +59,7 @@ najdisvujsen_prose( $najdisvujsen_section['data']['text'], 'people__intro' );
 		<?php endforeach; ?>
 	</div>
 <?php endif; ?>
-<p class="people__more"><?php esc_html_e( 'A mnoho dalších expertů a expertek', 'najdisvujsen' ); ?></p>
+<p class="people__more"><?php esc_html_e( 'A mnoho dalších expertů a expertek!', 'najdisvujsen' ); ?></p>
 <?php
 najdisvujsen_collage( $najdisvujsen_section['photos'], 'lide', 'section__photos' );
 najdisvujsen_section_close();

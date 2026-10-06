@@ -125,6 +125,7 @@ function najdisvujsen_form_assets() {
 				'highlight'     => __( 'Zvýrazněný box', 'najdisvujsen' ),
 				'subheading'    => __( 'Podnadpis', 'najdisvujsen' ),
 				'paragraph'     => __( 'Odstavec', 'najdisvujsen' ),
+				'caption'       => __( 'Popisek fotky', 'najdisvujsen' ),
 			),
 		)
 	);
@@ -178,14 +179,54 @@ function najdisvujsen_form_render( $post ) {
 		esc_url( najdisvujsen_help_url() ),
 		esc_html__( 'Návod k úpravám', 'najdisvujsen' )
 	);
+
+	najdisvujsen_form_tabs(
+		$type['schema'],
+		$data,
+		array(
+			'id'        => (string) $post->ID,
+			'post'      => $post,
+			'permalink' => $permalink,
+			'anchors'   => $anchors,
+		)
+	);
+}
+add_action( 'edit_form_after_title', 'najdisvujsen_form_render' );
+
+/**
+ * Prints the tabbed form of a set of fields.
+ *
+ * @since 0.6.0
+ *
+ * @param array[] $schema Tabs.
+ * @param array   $data   Values.
+ * @param array   $args {
+ *     Form arguments.
+ *
+ *     @type string       $id        Identifier used to remember the open tab.
+ *     @type WP_Post|null $post      Edited post, if any.
+ *     @type string       $permalink URL of the page for the "View on site" links.
+ *     @type string[]     $anchors   Page anchors keyed by tab.
+ * }
+ */
+function najdisvujsen_form_tabs( $schema, $data, $args ) {
+	$args = wp_parse_args(
+		$args,
+		array(
+			'id'        => '',
+			'post'      => null,
+			'permalink' => '',
+			'anchors'   => array(),
+		)
+	);
 	?>
-	<div class="nsj-form" data-post="<?php echo esc_attr( (string) $post->ID ); ?>" data-permalink="<?php echo esc_url( $permalink ); ?>">
+	<div class="nsj-form" data-post="<?php echo esc_attr( $args['id'] ); ?>" data-permalink="<?php echo esc_url( $args['permalink'] ); ?>">
 		<div class="nsj-errors notice notice-error inline" hidden role="alert"></div>
 		<nav class="nsj-tabs" aria-label="<?php esc_attr_e( 'Části stránky', 'najdisvujsen' ); ?>">
 			<?php
 			$najdisvujsen_index = 0;
 
-			foreach ( $type['schema'] as $tab => $definition ) :
+			foreach ( $schema as $tab => $definition ) :
 				++$najdisvujsen_index;
 				?>
 				<button type="button" class="nsj-tab" data-tab="<?php echo esc_attr( $tab ); ?>" aria-controls="<?php echo esc_attr( 'nsj-panel-' . $tab ); ?>">
@@ -196,16 +237,16 @@ function najdisvujsen_form_render( $post ) {
 			<?php endforeach; ?>
 		</nav>
 		<div class="nsj-panels">
-			<?php foreach ( $type['schema'] as $tab => $definition ) : ?>
+			<?php foreach ( $schema as $tab => $definition ) : ?>
 				<section class="nsj-panel" id="<?php echo esc_attr( 'nsj-panel-' . $tab ); ?>" data-panel="<?php echo esc_attr( $tab ); ?>" hidden>
 					<header class="nsj-panel__head">
 						<h2 class="nsj-panel__title"><?php echo esc_html( $definition['label'] ); ?></h2>
 						<?php
-						$najdisvujsen_anchor = $anchors[ $tab ] ?? ( in_array( $tab, array( 'zakladni', 'uvod', 'extra', 'video' ), true ) ? '' : $tab );
+						$najdisvujsen_anchor = $args['anchors'][ $tab ] ?? ( in_array( $tab, array( 'zakladni', 'uvod', 'extra', 'video', 'menu' ), true ) ? '' : $tab );
 
-						if ( $permalink ) :
+						if ( $args['permalink'] ) :
 							?>
-							<a class="nsj-panel__view" href="<?php echo esc_url( $permalink . ( $najdisvujsen_anchor ? '#' . $najdisvujsen_anchor : '' ) ); ?>" target="_blank" rel="noopener">
+							<a class="nsj-panel__view" href="<?php echo esc_url( $args['permalink'] . ( $najdisvujsen_anchor ? '#' . $najdisvujsen_anchor : '' ) ); ?>" target="_blank" rel="noopener">
 								<?php esc_html_e( 'Zobrazit na webu', 'najdisvujsen' ); ?>
 								<span class="dashicons dashicons-external" aria-hidden="true"></span>
 							</a>
@@ -219,7 +260,7 @@ function najdisvujsen_form_render( $post ) {
 						$najdisvujsen_path  = 'zakladni' === $tab ? array( $key ) : array( $tab, $key );
 						$najdisvujsen_value = 'zakladni' === $tab ? ( $data[ $key ] ?? null ) : ( $data[ $tab ][ $key ] ?? null );
 
-						najdisvujsen_form_field( $field, $najdisvujsen_path, $najdisvujsen_value, $post );
+						najdisvujsen_form_field( $field, $najdisvujsen_path, $najdisvujsen_value, $args['post'] );
 					}
 					?>
 				</section>
@@ -228,7 +269,6 @@ function najdisvujsen_form_render( $post ) {
 	</div>
 	<?php
 }
-add_action( 'edit_form_after_title', 'najdisvujsen_form_render' );
 
 /**
  * Builds the input name of a field from its data path.
@@ -350,7 +390,7 @@ function najdisvujsen_form_control( $field, $id, $name, $value, $post ) {
 			break;
 
 		case 'image':
-			najdisvujsen_form_image( $id, $name, (int) $value, false );
+			najdisvujsen_form_image( $id, $name, (int) $value, false, ! empty( $field['caption'] ) );
 			break;
 
 		case 'gallery':
@@ -430,6 +470,10 @@ function najdisvujsen_form_control( $field, $id, $name, $value, $post ) {
 
 		case 'list':
 			najdisvujsen_form_list( $field, $id, $name, (array) $value );
+
+			if ( ! empty( $field['career_links'] ) ) {
+				najdisvujsen_form_career_links( (array) $value );
+			}
 			break;
 
 		case 'date':
@@ -463,13 +507,19 @@ function najdisvujsen_form_control( $field, $id, $name, $value, $post ) {
  * @param string $name      Input name.
  * @param int    $value     Attachment ID.
  * @param bool   $thumbnail Whether the input is the featured image of the post.
+ * @param bool   $caption   Whether to offer editing the photo caption.
  */
-function najdisvujsen_form_image( $id, $name, $value, $thumbnail ) {
+function najdisvujsen_form_image( $id, $name, $value, $thumbnail, $caption = false ) {
 	$image = $value ? wp_get_attachment_image( $value, 'medium', false, array( 'class' => 'nsj-image__img' ) ) : '';
 	?>
-	<div class="nsj-image<?php echo $image ? ' has-image' : ''; ?>" data-empty="<?php echo $thumbnail ? '-1' : ''; ?>">
+	<div class="nsj-image<?php echo $image ? ' has-image' : ''; ?>" data-empty="<?php echo $thumbnail ? '-1' : ''; ?>" data-caption="<?php echo $caption ? '1' : ''; ?>">
 		<input type="hidden" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $value ? (string) $value : ( $thumbnail ? '-1' : '' ) ); ?>">
 		<div class="nsj-image__preview"><?php echo $image; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Core image markup. ?></div>
+		<?php
+		if ( $caption && $value ) {
+			najdisvujsen_form_caption( $value );
+		}
+		?>
 		<div class="nsj-image__actions">
 			<button type="button" class="button nsj-image__choose">
 				<span class="nsj-image__choose-empty"><?php esc_html_e( 'Vybrat fotografii', 'najdisvujsen' ); ?></span>
@@ -479,6 +529,29 @@ function najdisvujsen_form_image( $id, $name, $value, $thumbnail ) {
 		</div>
 	</div>
 	<?php
+}
+
+/**
+ * Prints the caption input of a photo.
+ *
+ * The caption is the alternative text of the image in the media library,
+ * so it is shared by every place the photo is used.
+ *
+ * @since 0.6.0
+ *
+ * @param int $attachment_id Attachment ID.
+ */
+function najdisvujsen_form_caption( $attachment_id ) {
+	$editable = current_user_can( 'edit_post', $attachment_id );
+
+	printf(
+		'<input type="text" class="nsj-caption" name="najdisvujsen_captions[%1$d]" value="%2$s" placeholder="%3$s" aria-label="%4$s"%5$s>',
+		(int) $attachment_id,
+		esc_attr( (string) get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ),
+		esc_attr__( 'Popisek fotky', 'najdisvujsen' ),
+		esc_attr__( 'Popisek fotky', 'najdisvujsen' ),
+		$editable ? '' : ' readonly title="' . esc_attr__( 'Popisek této fotky může upravit jen ten, kdo ji nahrál, nebo editor webu.', 'najdisvujsen' ) . '"'
+	);
 }
 
 /**
@@ -498,9 +571,10 @@ function najdisvujsen_form_gallery( $id, $name, $ids, $max ) {
 		<ul class="nsj-gallery__list">
 			<?php foreach ( $ids as $image_id ) : ?>
 				<li class="nsj-gallery__item">
-					<?php echo wp_get_attachment_image( $image_id, 'thumbnail' ); ?>
+					<span class="nsj-gallery__thumb"><?php echo wp_get_attachment_image( $image_id, 'thumbnail' ); ?></span>
 					<input type="hidden" name="<?php echo esc_attr( $name . '[]' ); ?>" value="<?php echo esc_attr( (string) $image_id ); ?>">
 					<button type="button" class="nsj-gallery__remove" aria-label="<?php esc_attr_e( 'Odebrat fotografii', 'najdisvujsen' ); ?>"><span class="dashicons dashicons-no-alt" aria-hidden="true"></span></button>
+					<?php najdisvujsen_form_caption( $image_id ); ?>
 				</li>
 			<?php endforeach; ?>
 		</ul>
@@ -514,6 +588,68 @@ function najdisvujsen_form_gallery( $id, $name, $ids, $max ) {
 			</span>
 		<?php endif; ?>
 	</div>
+	<?php
+}
+
+/**
+ * Prints which careers lead to study programs and which do not.
+ *
+ * A career is linked when a study program page lists the same career.
+ *
+ * @since 0.6.0
+ *
+ * @param string[] $items Careers and emoji.
+ */
+function najdisvujsen_form_career_links( $items ) {
+	$map      = najdisvujsen_career_map();
+	$programs = najdisvujsen_get_programs();
+	$linked   = array();
+	$missing  = array();
+
+	foreach ( $items as $item ) {
+		if ( preg_match( '/^[^\p{L}\p{N}\s]{1,4}$/u', $item ) ) {
+			continue;
+		}
+
+		$slugs = $map[ mb_strtolower( $item ) ] ?? array();
+
+		if ( ! $slugs ) {
+			$missing[] = $item;
+			continue;
+		}
+
+		$names = array();
+
+		foreach ( array_unique( $slugs ) as $slug ) {
+			$names[] = isset( $programs[ $slug ] ) ? najdisvujsen_program_name( $programs[ $slug ]->ID ) : $slug;
+		}
+
+		$linked[] = $item . ' → ' . implode( ', ', $names );
+	}
+	?>
+	<details class="nsj-links">
+		<summary>
+			<?php
+			/* translators: 1: number of linked careers, 2: number of careers without a study program. */
+			echo esc_html( sprintf( __( 'Propojení s obory: %1$d propojených, %2$d nikam nevede', 'najdisvujsen' ), count( $linked ), count( $missing ) ) );
+			?>
+		</summary>
+		<?php if ( $missing ) : ?>
+			<p class="nsj-links__missing">
+				<strong><?php esc_html_e( 'Nikam nevedou:', 'najdisvujsen' ); ?></strong>
+				<?php echo esc_html( implode( ', ', $missing ) ); ?>
+				<br>
+				<?php esc_html_e( 'Aby vedly na obory, doplňte stejně napsanou profesi u příslušných oborů: Obory → obor → Základní údaje → Profese → Přidat profesi. Pak tady uložte.', 'najdisvujsen' ); ?>
+			</p>
+		<?php endif; ?>
+		<?php if ( $linked ) : ?>
+			<ul class="nsj-links__list">
+				<?php foreach ( $linked as $line ) : ?>
+					<li><?php echo esc_html( $line ); ?></li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+	</details>
 	<?php
 }
 
@@ -725,6 +861,17 @@ function najdisvujsen_form_save( $post_id ) {
 
 	update_post_meta( $post_id, najdisvujsen_structured_type( $post_id )['key'], $values );
 	delete_transient( najdisvujsen_preview_key( $post_id ) );
+
+	// The nonce was verified in najdisvujsen_form_submitted().
+	$captions = isset( $_POST['najdisvujsen_captions'] ) ? wp_unslash( (array) $_POST['najdisvujsen_captions'] ) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitized per item.
+
+	foreach ( $captions as $attachment_id => $caption ) {
+		$attachment_id = absint( $attachment_id );
+
+		if ( $attachment_id && wp_attachment_is_image( $attachment_id ) && current_user_can( 'edit_post', $attachment_id ) ) {
+			update_post_meta( $attachment_id, '_wp_attachment_image_alt', sanitize_text_field( (string) $caption ) );
+		}
+	}
 }
 add_action( 'save_post', 'najdisvujsen_form_save' );
 

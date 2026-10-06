@@ -9,8 +9,8 @@
 
 	const settings = window.najdisvujsenForm || { i18n: {} };
 	const i18n = settings.i18n;
-	const form = document.getElementById( 'post' );
 	const root = document.querySelector( '.nsj-form' );
+	const form = root ? root.closest( 'form' ) : null;
 
 	if ( ! form || ! root ) {
 		return;
@@ -74,7 +74,7 @@
 	}
 
 	function initEditors( scope ) {
-		if ( ! window.wp || ! wp.editor ) {
+		if ( ! window.tinymce || ! window.wp || ! wp.editor || ! wp.oldEditor ) {
 			return;
 		}
 
@@ -149,7 +149,17 @@
 		initial = window.sessionStorage.getItem( storageKey ) || initial;
 	} catch ( error ) {}
 
+	// The editor scripts are printed after this file; editors start once they are loaded.
 	showTab( initial );
+	$( initEditorsWhenReady );
+
+	function initEditorsWhenReady() {
+		if ( window.tinymce && window.wp && wp.editor && wp.oldEditor ) {
+			panels.filter( ( panel ) => ! panel.hidden ).forEach( initEditors );
+		} else {
+			window.setTimeout( initEditorsWhenReady, 50 );
+		}
+	}
 
 	/* Repeaters -------------------------------------------------------- */
 
@@ -363,6 +373,10 @@
 			picker.querySelector( '.nsj-image__preview' ).innerHTML = '';
 			picker.classList.remove( 'has-image' );
 
+			if ( picker.querySelector( '.nsj-caption' ) ) {
+				picker.querySelector( '.nsj-caption' ).remove();
+			}
+
 			if ( item ) {
 				updateItemHead( item );
 			}
@@ -408,6 +422,23 @@
 		return ( sizes.medium || sizes.thumbnail || sizes.full || attachment ).url;
 	}
 
+	function captionInput( attachment ) {
+		const input = document.createElement( 'input' );
+
+		input.type = 'text';
+		input.className = 'nsj-caption';
+		input.name = 'najdisvujsen_captions[' + attachment.id + ']';
+		input.value = attachment.alt || '';
+		input.placeholder = i18n.caption;
+		input.setAttribute( 'aria-label', i18n.caption );
+
+		if ( attachment.nonces && ! attachment.nonces.update ) {
+			input.readOnly = true;
+		}
+
+		return input;
+	}
+
 	function chooseImage( picker ) {
 		const frame = wp.media( {
 			title: i18n.chooseImage,
@@ -423,6 +454,16 @@
 			picker.querySelector( 'input' ).value = attachment.id;
 			picker.querySelector( '.nsj-image__preview' ).innerHTML = '<img class="nsj-image__img" src="' + imageUrl( attachment ) + '" alt="">';
 			picker.classList.add( 'has-image' );
+
+			if ( picker.dataset.caption ) {
+				const old = picker.querySelector( '.nsj-caption' );
+
+				if ( old ) {
+					old.remove();
+				}
+
+				picker.querySelector( '.nsj-image__preview' ).after( captionInput( attachment ) );
+			}
 
 			if ( item ) {
 				updateItemHead( item );
@@ -454,9 +495,10 @@
 				const sizes = attachment.sizes || {};
 
 				li.className = 'nsj-gallery__item';
-				li.innerHTML = '<img src="' + ( sizes.thumbnail || sizes.full || attachment ).url + '" alt="">'
+				li.innerHTML = '<span class="nsj-gallery__thumb"><img src="' + ( sizes.thumbnail || sizes.full || attachment ).url + '" alt=""></span>'
 					+ '<input type="hidden" name="' + gallery.dataset.name + '" value="' + attachment.id + '">'
 					+ '<button type="button" class="nsj-gallery__remove" aria-label="' + i18n.remove + '"><span class="dashicons dashicons-no-alt" aria-hidden="true"></span></button>';
+				li.appendChild( captionInput( attachment ) );
 				list.appendChild( li );
 			} );
 

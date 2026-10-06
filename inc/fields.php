@@ -103,7 +103,7 @@ function najdisvujsen_photos_field( $help = '', $max = 4 ) {
 	return array(
 		'type'  => 'gallery',
 		'label' => __( 'Fotografie sekce', 'najdisvujsen' ),
-		'help'  => $help ? $help : __( 'Nepovinné. Zobrazí se vedle textu nebo pod ním. Pořadí změníte přetažením.', 'najdisvujsen' ),
+		'help'  => ( $help ? $help : __( 'Nepovinné. Zobrazí se vedle textu nebo pod ním. Pořadí změníte přetažením.', 'najdisvujsen' ) ) . ' ' . __( 'Pod každou fotkou můžete upravit popisek, který se na webu zobrazí na fotce.', 'najdisvujsen' ),
 		'max'   => $max,
 	);
 }
@@ -274,7 +274,7 @@ function najdisvujsen_obor_schema() {
 							'type'    => 'checkboxes',
 							'label'   => __( 'Forma studia', 'najdisvujsen' ),
 							'options' => najdisvujsen_program_form_options(),
-							'help'    => __( 'Nepovinné. Zaškrtněte jen to, co platí.', 'najdisvujsen' ),
+							'help'    => __( 'Nezaškrtnuté = prezenční. Podle formy se programy filtrují v katalogu na titulní stránce.', 'najdisvujsen' ),
 						),
 						'types'          => array(
 							'type'    => 'checkboxes',
@@ -403,7 +403,7 @@ function najdisvujsen_obor_schema() {
 		'lide'      => array(
 			'label'  => __( 'Vyučující', 'najdisvujsen' ),
 			'icon'   => 'groups',
-			'intro'  => __( 'Představení vyučujících. Na webu jsou nejvýše tři vedle sebe a pod nimi je vždy věta „A mnoho dalších expertů a expertek“ – nepište ji sem.', 'najdisvujsen' ),
+			'intro'  => __( 'Představení vyučujících. Na webu jsou nejvýše tři vedle sebe a pod nimi je vždy věta „A mnoho dalších expertů a expertek!“ – nepište ji sem.', 'najdisvujsen' ),
 			'fields' => array(
 				'title'  => najdisvujsen_section_heading_field( __( 'Kdo tě bude učit?', 'najdisvujsen' ) ),
 				'text'   => array(
@@ -501,9 +501,75 @@ function najdisvujsen_obor_schema() {
  */
 function najdisvujsen_front_schema() {
 	$rich_help = __( 'Odstavce, odrážky, tučné písmo, odkazy.', 'najdisvujsen' );
-	$bubble    = __( 'Profese nebo emoji (jeden symbol). Bubliny jedou v pásu pod úvodem stránky.', 'najdisvujsen' );
+	$bubble    = __( 'Profese nebo emoji (jeden symbol). Bubliny jedou v pásu pod úvodem stránky. Kliknutím na profesi se v katalogu ukážou obory, které k ní vedou – jen pokud stejně napsanou profesi uvádí aspoň jeden obor (Obory → obor → Základní údaje → Profese).', 'najdisvujsen' );
 
 	return array(
+		'menu'      => array(
+			'label'  => __( 'Horní menu', 'najdisvujsen' ),
+			'icon'   => 'menu',
+			'intro'  => __( 'Položky menu v horní liště titulní stránky. Tlačítko „Podat přihlášku“ je v liště vždy. Když všechny položky smažete, menu se sestaví samo z oddílů stránky.', 'najdisvujsen' ),
+			'fields' => array(
+				'items' => array(
+					'type'    => 'repeater',
+					'label'   => __( 'Položky', 'najdisvujsen' ),
+					'add'     => __( 'Přidat položku', 'najdisvujsen' ),
+					'item'    => __( 'Položka', 'najdisvujsen' ),
+					'title'   => 'label',
+					'max'     => 7,
+					'fields'  => array(
+						'label'  => array(
+							'type'     => 'text',
+							'label'    => __( 'Text v menu', 'najdisvujsen' ),
+							'help'     => __( 'Krátce, jedno až dvě slova.', 'najdisvujsen' ),
+							'max'      => 24,
+							'required' => true,
+						),
+						'target' => array(
+							'type'    => 'select',
+							'label'   => __( 'Kam vede', 'najdisvujsen' ),
+							'options' => array(
+								'univerzita'        => __( 'Oddíl: Proč FF UP', 'najdisvujsen' ),
+								'univerzitni-mesto' => __( 'Oddíl: Univerzitní město', 'najdisvujsen' ),
+								'programy'          => __( 'Oddíl: Katalog programů', 'najdisvujsen' ),
+								'dod'               => __( 'Oddíl: Den otevřených dveří', 'najdisvujsen' ),
+								'zivot'             => __( 'Oddíl: Život na FF UP', 'najdisvujsen' ),
+								'slovensko'         => __( 'Oddíl: Ze Slovenska', 'najdisvujsen' ),
+								'url'               => __( 'Jiná stránka (vyplňte odkaz níže)', 'najdisvujsen' ),
+							),
+							'default' => 'univerzita',
+						),
+						'url'    => array(
+							'type'        => 'url',
+							'label'       => __( 'Odkaz', 'najdisvujsen' ),
+							'placeholder' => 'https://',
+							'help'        => __( 'Jen pro „Jiná stránka“.', 'najdisvujsen' ),
+						),
+					),
+					'default' => array(
+						array(
+							'label'  => 'Proč u nás',
+							'target' => 'univerzita',
+							'url'    => '',
+						),
+						array(
+							'label'  => 'Programy',
+							'target' => 'programy',
+							'url'    => '',
+						),
+						array(
+							'label'  => 'DOD',
+							'target' => 'dod',
+							'url'    => '',
+						),
+						array(
+							'label'  => 'Ze Slovenska',
+							'target' => 'slovensko',
+							'url'    => '',
+						),
+					),
+				),
+			),
+		),
 		'uvod'      => array(
 			'label'  => __( 'Úvod', 'najdisvujsen' ),
 			'icon'   => 'cover-image',
@@ -520,43 +586,23 @@ function najdisvujsen_front_schema() {
 					'rows'  => 2,
 					'max'   => 200,
 				),
-				'social'  => array(
-					'type'   => 'group',
-					'label'  => __( 'Sociální sítě fakulty', 'najdisvujsen' ),
-					'fields' => array(
-						'facebook'  => array(
-							'type'  => 'url',
-							'label' => 'Facebook',
-						),
-						'instagram' => array(
-							'type'  => 'url',
-							'label' => 'Instagram',
-						),
-						'youtube'   => array(
-							'type'  => 'url',
-							'label' => 'YouTube',
-						),
-						'tiktok'    => array(
-							'type'  => 'url',
-							'label' => 'TikTok',
-						),
-					),
-				),
 				'bubbles' => array(
 					'type'   => 'group',
 					'label'  => __( 'Pásy s bublinami', 'najdisvujsen' ),
 					'fields' => array(
 						'top'    => array(
-							'type'  => 'list',
-							'label' => __( 'Horní pás', 'najdisvujsen' ),
-							'help'  => $bubble,
-							'add'   => __( 'Přidat bublinu', 'najdisvujsen' ),
+							'type'         => 'list',
+							'label'        => __( 'Horní pás', 'najdisvujsen' ),
+							'help'         => $bubble,
+							'add'          => __( 'Přidat bublinu', 'najdisvujsen' ),
+							'career_links' => true,
 						),
 						'bottom' => array(
-							'type'  => 'list',
-							'label' => __( 'Dolní pás', 'najdisvujsen' ),
-							'help'  => $bubble,
-							'add'   => __( 'Přidat bublinu', 'najdisvujsen' ),
+							'type'         => 'list',
+							'label'        => __( 'Dolní pás', 'najdisvujsen' ),
+							'help'         => $bubble,
+							'add'          => __( 'Přidat bublinu', 'najdisvujsen' ),
+							'career_links' => true,
 						),
 					),
 				),
@@ -601,9 +647,10 @@ function najdisvujsen_front_schema() {
 					),
 				),
 				'photo' => array(
-					'type'  => 'image',
-					'label' => __( 'Fotografie', 'najdisvujsen' ),
-					'help'  => __( 'Široká dlaždice vedle čísel, ideálně na šířku.', 'najdisvujsen' ),
+					'type'    => 'image',
+					'label'   => __( 'Fotografie', 'najdisvujsen' ),
+					'help'    => __( 'Široká dlaždice vedle čísel, ideálně na šířku. Popisek se zobrazí na fotce.', 'najdisvujsen' ),
+					'caption' => true,
 				),
 			),
 		),
@@ -641,8 +688,10 @@ function najdisvujsen_front_schema() {
 					'max'   => 160,
 				),
 				'photo'     => array(
-					'type'  => 'image',
-					'label' => __( 'Fotografie', 'najdisvujsen' ),
+					'type'    => 'image',
+					'label'   => __( 'Fotografie', 'najdisvujsen' ),
+					'help'    => __( 'Popisek se zobrazí na fotce.', 'najdisvujsen' ),
+					'caption' => true,
 				),
 				'video'     => array(
 					'type'        => 'text',
@@ -709,10 +758,11 @@ function najdisvujsen_front_schema() {
 					),
 				),
 				'careers' => array(
-					'type'  => 'list',
-					'label' => __( 'Profese v průvodci „Kým chceš být?“', 'najdisvujsen' ),
-					'help'  => __( 'Zobrazí se jen profese, které má uvedené alespoň jeden obor (Základní údaje → Profese). Musí se shodovat přesně, např. „Historik“.', 'najdisvujsen' ),
-					'add'   => __( 'Přidat profesi', 'najdisvujsen' ),
+					'type'         => 'list',
+					'label'        => __( 'Profese v průvodci „Kým chceš být?“', 'najdisvujsen' ),
+					'help'         => __( 'Losuje se jen z profesí, které má uvedené alespoň jeden obor (Obory → obor → Základní údaje → Profese). Musí být napsané stejně, např. „Historik“.', 'najdisvujsen' ),
+					'add'          => __( 'Přidat profesi', 'najdisvujsen' ),
+					'career_links' => true,
 				),
 				'extra'   => array(
 					'type'   => 'repeater',
@@ -739,6 +789,12 @@ function najdisvujsen_front_schema() {
 							'label'    => __( 'Kategorie', 'najdisvujsen' ),
 							'options'  => najdisvujsen_program_categories(),
 							'required' => true,
+						),
+						'forms'    => array(
+							'type'    => 'checkboxes',
+							'label'   => __( 'Forma studia', 'najdisvujsen' ),
+							'options' => najdisvujsen_program_form_options(),
+							'help'    => __( 'Nezaškrtnuté = prezenční.', 'najdisvujsen' ),
 						),
 						'url'      => array(
 							'type'     => 'url',

@@ -194,7 +194,8 @@
 		const diceLabel = explorer.querySelector( '[data-dice-label]' );
 		const stage = explorer.querySelector( '[data-picker-stage]' );
 		const stageBubble = explorer.querySelector( '[data-picker-stage-bubble]' );
-		const state = { level: levels.length ? levels[ 0 ].dataset.level : '', career: '', query: '' };
+		const formButtons = Array.from( explorer.querySelectorAll( '[data-form-filter]' ) );
+		const state = { level: levels.length ? levels[ 0 ].dataset.level : '', career: '', query: '', form: '' };
 
 		levels.forEach( ( level ) => level.querySelectorAll( '.program-link' ).forEach( ( link ) => {
 			link.dataset.search = normalize( link.textContent );
@@ -203,14 +204,16 @@
 		const render = () => {
 			const slugs = state.career ? map[ state.career.toLowerCase() ] || [] : null;
 			const query = normalize( state.query );
-			const filtering = Boolean( query || slugs );
+			const filtering = Boolean( query || slugs || state.form );
 			let hits = 0;
 
 			levels.forEach( ( level ) => {
 				level.hidden = level.dataset.level !== state.level;
 
 				level.querySelectorAll( '.program-link' ).forEach( ( link ) => {
-					const match = ( ! query || link.dataset.search.includes( query ) ) && ( ! slugs || slugs.includes( link.dataset.slug ) );
+					const match = ( ! query || link.dataset.search.includes( query ) )
+						&& ( ! slugs || slugs.includes( link.dataset.slug ) )
+						&& ( ! state.form || ( link.dataset.forms || '' ).split( ' ' ).includes( state.form ) );
 					link.classList.toggle( 'is-hit', filtering && match );
 					link.classList.toggle( 'is-dim', filtering && ! match );
 
@@ -284,6 +287,14 @@
 		if ( clear ) {
 			clear.addEventListener( 'click', () => setCareer( '', false ) );
 		}
+
+		formButtons.forEach( ( button ) => {
+			button.addEventListener( 'click', () => {
+				state.form = button.dataset.formFilter;
+				formButtons.forEach( ( other ) => other.setAttribute( 'aria-pressed', String( other === button ) ) );
+				render();
+			} );
+		} );
 
 		document.querySelectorAll( '.hero [data-career]' ).forEach( ( bubble ) => {
 			bubble.addEventListener( 'click', () => {

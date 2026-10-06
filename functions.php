@@ -24,6 +24,7 @@ require NAJDISVUJSEN_DIR . '/inc/obor.php';
 require NAJDISVUJSEN_DIR . '/inc/fields.php';
 require NAJDISVUJSEN_DIR . '/inc/admin-form.php';
 require NAJDISVUJSEN_DIR . '/inc/admin-help.php';
+require NAJDISVUJSEN_DIR . '/inc/footer-settings.php';
 require NAJDISVUJSEN_DIR . '/inc/programs.php';
 require NAJDISVUJSEN_DIR . '/inc/template-tags.php';
 require NAJDISVUJSEN_DIR . '/inc/class-najdisvujsen-flat-nav-walker.php';

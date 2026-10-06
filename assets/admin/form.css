@@ -320,18 +320,35 @@ fieldset.nsj-field {
 
 .nsj-gallery__item {
 	position: relative;
-	width: 96px;
-	height: 96px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	width: 150px;
 	margin: 0;
-	overflow: hidden;
 	cursor: move;
+}
+
+.nsj-gallery__thumb {
+	display: block;
+	height: 110px;
+	overflow: hidden;
 	border-radius: 6px;
 }
 
-.nsj-gallery__item img {
+.nsj-gallery__thumb img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+}
+
+.nsj-caption {
+	width: 100%;
+	min-height: 30px;
+	font-size: 12px;
+}
+
+.nsj-image .nsj-caption {
+	width: 220px;
 }
 
 .nsj-gallery__remove,
@@ -546,6 +563,28 @@ fieldset.nsj-field {
 
 .nsj-field textarea.nsj-rich {
 	width: 100%;
+}
+
+.nsj-links {
+	margin-top: 10px;
+	font-size: 13px;
+}
+
+.nsj-links summary {
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.nsj-links__missing {
+	padding: 8px 12px;
+	margin: 8px 0;
+	background: #fcf9e8;
+	border-left: 4px solid #dba617;
+}
+
+.nsj-links__list {
+	margin: 8px 0 0 18px;
+	list-style: disc;
 }
 
 .najdisvujsen-user-obory {

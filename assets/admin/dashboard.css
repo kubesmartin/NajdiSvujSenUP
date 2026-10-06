@@ -1,0 +1,77 @@
+/**
+ * Dashboard buttons.
+ *
+ * @package NajdiSvujSen
+ */
+
+#dashboard-widgets-wrap #dashboard-widgets .postbox-container {
+	width: 100% !important;
+	max-width: 1100px;
+}
+
+#dashboard-widgets #postbox-container-2,
+#dashboard-widgets #postbox-container-3,
+#dashboard-widgets #postbox-container-4 {
+	display: none;
+}
+
+#najdisvujsen-links .postbox-header .handle-actions {
+	display: none;
+}
+
+.nsj-dash {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	gap: 14px;
+	margin: 6px 0 4px;
+}
+
+.nsj-dash li {
+	margin: 0;
+}
+
+.nsj-dash__btn {
+	box-sizing: border-box;
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 2px 14px;
+	align-items: center;
+	height: 100%;
+	padding: 16px 22px;
+	color: #1d2327;
+	text-decoration: none;
+	background: #eef8fd;
+	border: 2px solid transparent;
+	border-radius: 28px;
+	transition: border-color 150ms, background 150ms, transform 150ms;
+}
+
+.nsj-dash__btn:hover,
+.nsj-dash__btn:focus-visible {
+	color: #1d2327;
+	background: #fff;
+	border-color: #3ab0e1;
+	transform: translateY(-2px);
+}
+
+.nsj-dash__icon {
+	display: grid;
+	grid-row: span 2;
+	place-items: center;
+	width: 48px;
+	height: 48px;
+	font-size: 24px;
+	color: #fff;
+	background: #3ab0e1;
+	border-radius: 50%;
+}
+
+.nsj-dash__label {
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.nsj-dash__text {
+	font-size: 13px;
+	color: #50575e;
+}
