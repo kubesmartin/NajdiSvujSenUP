@@ -437,8 +437,8 @@ html:not(.js) .js-only {
 
 .word {
 	display: inline-block;
-	/* Dederon sits high in its line box; the larger top padding centres the letters optically. */
-	padding: 0.19em 0.42em 0.09em;
+	/* Room above for diacritics and below for descenders keeps every word optically centred. */
+	padding: 0.19em 0.42em 0.19em;
 	font: 700 1em/0.95 var(--font-display);
 	color: var(--white);
 	letter-spacing: -0.035em;
@@ -1484,6 +1484,45 @@ html:not(.js) .site-nav {
 	.slogan {
 		gap: 26px;
 		font-size: clamp(80px, 9vw, 150px);
+	}
+}
+
+/* Extra wide screens get a wider, larger header. */
+@media (min-width: 1800px) {
+
+	:root {
+		--container-wide: min(1760px, 88vw);
+	}
+
+	.hero__main {
+		grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+		gap: 72px;
+		padding-block: 96px 56px;
+	}
+
+	.slogan {
+		max-width: none;
+		font-size: clamp(150px, 8.4vw, 210px);
+	}
+
+	.sticker--slogan {
+		--size: 84px;
+
+		font-size: 40px;
+	}
+
+	.hero__title {
+		font-size: 64px;
+	}
+
+	.hero__lead {
+		max-width: 640px;
+		font-size: 21px;
+	}
+
+	.marquee .bubble {
+		padding: 11px 26px 7px;
+		font-size: 22px;
 	}
 }
 
@@ -2664,7 +2703,7 @@ a.program-link:hover {
 	overflow-wrap: normal;
 	hyphens: none;
 	background: var(--ff-blue);
-	border-radius: 0.6em;
+	border-radius: 999px;
 	-webkit-box-decoration-break: clone;
 	box-decoration-break: clone;
 }
