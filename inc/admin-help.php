@@ -89,6 +89,7 @@ function najdisvujsen_help_page() {
 				__( 'Nový obor: Obory → Přidat obor. Vyplňte název, Základní údaje a alespoň jeden program, pak „Publikovat“. Adresa oboru vznikne z názvu (lze upravit pod názvem jako „Trvalý odkaz“).', 'najdisvujsen' ),
 				__( 'Titulní stránku (úvod, čísla, termíny dne otevřených dveří, galerie…) upravíte v menu Titulní stránka. Termíny dne otevřených dveří po svém datu samy zmizí.', 'najdisvujsen' ),
 				__( 'Odkazy na e-přihlášku a přijímací řízení jsou v menu Odkazy na přihlášku a přijímačky – každý rok je zkontrolujte.', 'najdisvujsen' ),
+				__( 'Mimořádné oznámení (žlutý pruh pod úvodem titulní stránky) zapnete v menu Oznámení. Nastavte mu datum „Zobrazit do“, ať samo zmizí, až přestane platit.', 'najdisvujsen' ),
 				__( 'Kolegům z kateder vytvořte účet s rolí „Správce oboru“ (Uživatelé → Vytvořit uživatele) a dole na stránce uživatele zaškrtněte obory, které smí upravovat. Správce oboru nevidí ostatní obory ani titulní stránku a nemůže obor smazat, skrýt ani změnit jeho adresu.', 'najdisvujsen' ),
 			),
 		);
@@ -164,6 +165,13 @@ function najdisvujsen_dashboard_buttons() {
 
 	if ( current_user_can( 'edit_others_pages' ) ) {
 		$buttons[] = array(
+			'url'   => menu_page_url( 'najdisvujsen-announcement', false ),
+			'label' => __( 'Mimořádné oznámení', 'najdisvujsen' ),
+			'text'  => najdisvujsen_announcement_status_text( najdisvujsen_announcement_data() ),
+			'icon'  => 'warning',
+			'alert' => 'shown' === najdisvujsen_announcement_status( najdisvujsen_announcement_data() ),
+		);
+		$buttons[] = array(
 			'url'   => menu_page_url( 'najdisvujsen-settings', false ),
 			'label' => __( 'Odkazy na přihlášku a přijímačky', 'najdisvujsen' ),
 			'text'  => __( 'kam vedou tlačítka „Podat přihlášku“ a „Přijímací řízení“', 'najdisvujsen' ),
@@ -197,12 +205,13 @@ function najdisvujsen_dashboard_links() {
 
 	foreach ( najdisvujsen_dashboard_buttons() as $button ) {
 		printf(
-			'<li><a class="nsj-dash__btn" href="%1$s"%2$s><span class="nsj-dash__icon dashicons dashicons-%3$s" aria-hidden="true"></span><span class="nsj-dash__label">%4$s</span><span class="nsj-dash__text">%5$s</span></a></li>',
+			'<li><a class="nsj-dash__btn%6$s" href="%1$s"%2$s><span class="nsj-dash__icon dashicons dashicons-%3$s" aria-hidden="true"></span><span class="nsj-dash__label">%4$s</span><span class="nsj-dash__text">%5$s</span></a></li>',
 			esc_url( $button['url'] ),
 			empty( $button['new'] ) ? '' : ' target="_blank" rel="noopener"',
 			esc_attr( $button['icon'] ),
 			esc_html( $button['label'] ),
-			esc_html( $button['text'] )
+			esc_html( $button['text'] ),
+			empty( $button['alert'] ) ? '' : ' is-alert'
 		);
 	}
 

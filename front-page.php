@@ -21,6 +21,7 @@ while ( have_posts() ) :
 	$najdisvujsen_data = najdisvujsen_get_data();
 
 	get_template_part( 'template-parts/front/hero', null, array( 'data' => $najdisvujsen_data['uvod'] ) );
+	get_template_part( 'template-parts/front/announcement' );
 	get_template_part( 'template-parts/front/why', null, array( 'data' => $najdisvujsen_data['proc'] ) );
 	get_template_part( 'template-parts/front/video', null, array( 'data' => $najdisvujsen_data['video'] ) );
 

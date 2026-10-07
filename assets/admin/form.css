@@ -24,6 +24,14 @@
 	color: #646970;
 }
 
+.nsj-form:has(.nsj-tabs > .nsj-tab:only-child) {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+.nsj-form:has(.nsj-tabs > .nsj-tab:only-child) .nsj-tabs {
+	display: none;
+}
+
 .nsj-errors {
 	grid-column: 1 / -1;
 	margin: 16px 16px 0 !important;

@@ -75,3 +75,12 @@
 	font-size: 13px;
 	color: #50575e;
 }
+
+.nsj-dash__btn.is-alert {
+	background: #faef52;
+}
+
+.nsj-dash__btn.is-alert .nsj-dash__icon {
+	color: #faef52;
+	background: #1d2327;
+}

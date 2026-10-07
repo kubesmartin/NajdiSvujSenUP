@@ -3,7 +3,7 @@ Contributors: Filozofická fakulta Univerzity Palackého v Olomouci
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 0.6.0
+Stable tag: 0.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,7 @@ cannot create, delete or unpublish them or change their URL.
 Admin screens:
 
 * Titulní stránka - front page form, including its top menu
+* Oznámení - optional announcement bar below the front page header
 * Obory - study program pages, guide for editors (Návod), careers export
 * Odkazy na přihlášku a přijímačky - application and admission links
 * Patička a sítě - footer, social networks of the faculty
@@ -74,6 +75,10 @@ License: ISC
 Source: https://lucide.dev/
 
 == Changelog ==
+
+= 0.7.0 =
+* Announcement bar on the front page with its own screen and schedule.
+* Career picker centred on phones.
 
 = 0.6.0 =
 * Footer and social networks screen; editable front page top menu.

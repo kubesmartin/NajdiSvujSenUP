@@ -1487,6 +1487,90 @@ html:not(.js) .site-nav {
 	}
 }
 
+/* Announcement */
+
+.announcement {
+	padding: 20px 0 0;
+	background: var(--white);
+}
+
+.announcement__bubble {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 14px;
+	align-items: center;
+	padding: 22px 20px 20px;
+	color: var(--black);
+	background: #faef52;
+	border-radius: 28px;
+}
+
+.announcement__icon {
+	display: grid;
+	place-items: center;
+	width: 44px;
+	height: 44px;
+	font-size: 20px;
+	color: #faef52;
+	background: var(--black);
+	border-radius: 999px;
+}
+
+.announcement__icon .icon {
+	stroke-width: 3.25;
+}
+
+.announcement__title {
+	margin: 0 0 4px;
+	font: 700 clamp(19px, 2.2vw, 24px)/1.2 var(--font-display);
+}
+
+.announcement__text {
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+.announcement__text a {
+	color: var(--black);
+	text-decoration-thickness: 2px;
+}
+
+.announcement__link {
+	grid-column: 1 / -1;
+	justify-content: center;
+	color: #faef52;
+	background: var(--black);
+}
+
+.announcement__link:hover {
+	color: var(--black);
+	background: var(--white);
+}
+
+@media (min-width: 800px) {
+
+	.announcement {
+		padding-top: 28px;
+	}
+
+	.announcement__bubble {
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		gap: 24px;
+		padding: 20px 22px 20px 20px;
+		border-radius: 999px;
+	}
+
+	.announcement__icon {
+		width: 60px;
+		height: 60px;
+		font-size: 26px;
+	}
+
+	.announcement__link {
+		grid-column: auto;
+	}
+}
+
 /* Extra wide screens get a wider, larger header. */
 @media (min-width: 1800px) {
 
@@ -4050,6 +4134,50 @@ a.program-link:hover {
 	.open-days .cta-row .btn {
 		justify-content: center;
 		width: 100%;
+	}
+}
+
+/* Phones: everything centred, the drawn career with its clear button above the dice. */
+@media (max-width: 699px) {
+
+	.picker {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.picker__head {
+		display: contents;
+	}
+
+	.picker__title {
+		order: 1;
+	}
+
+	.picker__stage {
+		order: 2;
+		width: 100%;
+		padding-top: 14px;
+	}
+
+	.picker [data-picker-clear] {
+		order: 3;
+		margin-top: 10px;
+	}
+
+	.picker__dice,
+	.picker__stage + .picker__dice {
+		flex-direction: column;
+		order: 4;
+		gap: 10px;
+		width: 100%;
+		margin-top: 18px;
+	}
+
+	.picker__result {
+		order: 5;
+		text-wrap: balance;
 	}
 }
 
